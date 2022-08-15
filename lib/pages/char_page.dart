@@ -151,62 +151,78 @@ class _CharPageState extends State<CharPage> {
                 datas[index].displayName.toString() == "فايد"
             ? Image.asset("assets/char/fade.webp")
             : datas[index].displayName.toString() == "BREACH" ||
+                    datas[index].displayName.toString() == "بريتش" ||
                     datas[index].displayName.toString() == "Breach"
                 ? Image.asset("assets/char/breach.webp")
                 : datas[index].displayName.toString() == "RAZE" ||
-                        datas[index].displayName.toString() == "Raze"
+                        datas[index].displayName.toString() == "Raze" ||
+                        datas[index].displayName.toString() == "رايز"
                     ? Image.asset("assets/char/raze.webp")
                     : datas[index].displayName.toString() == "CHAMBER" ||
-                            datas[index].displayName.toString() == "Chamber"
+                            datas[index].displayName.toString() == "Chamber" ||
+                            datas[index].displayName.toString() == "تشامبر"
                         ? Image.asset("assets/char/chamber.webp")
                         : datas[index].displayName.toString() == "KAY/O" ||
-                                datas[index].displayName.toString() == "Kay/o"
+                                datas[index].displayName.toString() ==
+                                    "Kay/o" ||
+                                datas[index].displayName.toString() == "كاي/أو"
                             ? Image.asset("assets/char/kayo.webp")
                             : datas[index].displayName.toString() == "SKYE" ||
                                     datas[index].displayName.toString() ==
-                                        "Skye"
+                                        "Skye" ||
+                                    datas[index].displayName.toString() ==
+                                        "سكاي"
                                 ? Image.asset("assets/char/skye.webp")
                                 : datas[index].displayName.toString() == "CYPHER" ||
                                         datas[index].displayName.toString() ==
-                                            "Cypher"
+                                            "Cypher" ||
+                                        datas[index].displayName.toString() ==
+                                            "سايفر"
                                     ? Image.asset("assets/char/cypher.webp")
                                     : datas[index].displayName.toString() == "SOVA" ||
                                             datas[index].displayName.toString() ==
-                                                "Sova"
+                                                "Sova" ||
+                                            datas[index].displayName.toString() ==
+                                                "سوفا"
                                         ? Image.asset("assets/char/sova.webp")
-                                        : datas[index].displayName.toString() ==
-                                                    "KILLJOY" ||
+                                        : datas[index].displayName.toString() == "KILLJOY" ||
                                                 datas[index].displayName.toString() ==
-                                                    "Killjoy"
+                                                    "Killjoy" ||
+                                                datas[index].displayName.toString() ==
+                                                    "كيلجوي"
                                             ? Image.asset(
                                                 "assets/char/killjoy.webp")
                                             : datas[index].displayName.toString() == "VIPER" ||
                                                     datas[index].displayName.toString() ==
-                                                        "Viper"
+                                                        "Viper" ||
+                                                    datas[index]
+                                                            .displayName
+                                                            .toString() ==
+                                                        "فايبر"
                                                 ? Image.asset(
                                                     "assets/char/viper.webp")
-                                                : datas[index].displayName.toString() ==
-                                                            "PHOENIX" ||
+                                                : datas[index].displayName.toString() == "PHOENIX" ||
                                                         datas[index]
                                                                 .displayName
                                                                 .toString() ==
-                                                            "Phoenix"
+                                                            "Phoenix" ||
+                                                        datas[index].displayName.toString() == "فينيكس"
                                                     ? Image.asset("assets/char/phoenix.webp")
-                                                    : datas[index].displayName.toString() == "ASTRA" || datas[index].displayName.toString() == "Astra"
+                                                    : datas[index].displayName.toString() == "ASTRA" || datas[index].displayName.toString() == "Astra" || datas[index].displayName.toString() == "أسترا"
                                                         ? Image.asset("assets/char/astra.webp")
-                                                        : datas[index].displayName.toString() == "BRIMSTONE" || datas[index].displayName.toString() == "Brimstone"
+                                                        : datas[index].displayName.toString() == "BRIMSTONE" || datas[index].displayName.toString() == "Brimstone" || datas[index].displayName.toString() == "بريمستون"
                                                             ? Image.asset("assets/char/brim.webp")
-                                                            : datas[index].displayName.toString() == "NEON" || datas[index].displayName.toString() == "Neon"
+                                                            : datas[index].displayName.toString() == "NEON" || datas[index].displayName.toString() == "Neon" || datas[index].displayName.toString() == "نيون"
                                                                 ? Image.asset("assets/char/neon.webp")
-                                                                : datas[index].displayName.toString() == "YORU" || datas[index].displayName.toString() == "Yoru"
+                                                                : datas[index].displayName.toString() == "YORU" || datas[index].displayName.toString() == "Yoru" || datas[index].displayName.toString() == "يورو"
                                                                     ? Image.asset("assets/char/yoru.webp")
-                                                                    : datas[index].displayName.toString() == "SAGE" || datas[index].displayName.toString() == "Sage"
+                                                                    : datas[index].displayName.toString() == "SAGE" || datas[index].displayName.toString() == "Sage" || datas[index].displayName.toString() == "سايج"
                                                                         ? Image.asset("assets/char/sage.webp")
-                                                                        : datas[index].displayName.toString() == "REYNA" || datas[index].displayName.toString() == "Reyna"
+                                                                        : datas[index].displayName.toString() == "REYNA" || datas[index].displayName.toString() == "Reyna" || datas[index].displayName.toString() == "ريينا"
                                                                             ? Image.asset("assets/char/reyna.webp")
-                                                                            : datas[index].displayName.toString() == "OMEN" || datas[index].displayName.toString() == "Omen"
+                                                                            : datas[index].displayName.toString() == "OMEN" || datas[index].displayName.toString() == "Omen" || datas[index].displayName.toString() == "أومين"
                                                                                 ? Image.asset("assets/char/omen.webp")
-                                                                                : datas[index].displayName.toString() == "JETT" || datas[index].displayName.toString() == "Jett"
+                                                                                : datas[index].displayName.toString() == "JETT" || datas[index].displayName.toString() == "Jett" || datas[index].displayName.toString() == "جيت"
                                                                                     ? Image.asset("assets/char/jett.webp")
                                                                                     : Image.asset("assets/char/no.png"),
       ),

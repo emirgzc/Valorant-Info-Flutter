@@ -176,64 +176,76 @@ class _CharDetailPageState extends State<CharDetailPage> {
                   ),
                   Center(
                     child: SizedBox(
-                      height: 700.h,
-                      child: datas?.displayName.toString() == "FADE" ||
-                              datas?.displayName.toString() == "Fade"
+                      height: 550.h,
+                      child: datas!.displayName.toString() == "FADE" ||
+                              datas.displayName.toString() == "Fade" ||
+                              datas.displayName.toString() == "فايد"
                           ? Image.asset("assets/char/fade.webp")
-                          : datas?.displayName.toString() == "BREACH" ||
-                                  datas?.displayName.toString() == "Breach"
+                          : datas.displayName.toString() == "BREACH" ||
+                                  datas.displayName.toString() == "بريتش" ||
+                                  datas.displayName.toString() == "Breach"
                               ? Image.asset("assets/char/breach.webp")
-                              : datas?.displayName.toString() == "RAZE" ||
-                                      datas?.displayName.toString() == "Raze"
+                              : datas.displayName.toString() == "RAZE" ||
+                                      datas.displayName.toString() == "Raze" ||
+                                      datas.displayName.toString() == "رايز"
                                   ? Image.asset("assets/char/raze.webp")
-                                  : datas?.displayName.toString() == "CHAMBER" ||
-                                          datas?.displayName.toString() ==
-                                              "Chamber"
+                                  : datas.displayName.toString() == "CHAMBER" ||
+                                          datas.displayName.toString() ==
+                                              "Chamber" ||
+                                          datas.displayName.toString() ==
+                                              "تشامبر"
                                       ? Image.asset("assets/char/chamber.webp")
-                                      : datas?.displayName.toString() == "KAY/O" ||
-                                              datas?.displayName.toString() ==
-                                                  "Kay/o"
+                                      : datas.displayName.toString() == "KAY/O" ||
+                                              datas.displayName.toString() ==
+                                                  "Kay/o" ||
+                                              datas.displayName.toString() ==
+                                                  "كاي/أو"
                                           ? Image.asset("assets/char/kayo.webp")
-                                          : datas?.displayName.toString() == "SKYE" ||
-                                                  datas?.displayName.toString() ==
-                                                      "Skye"
+                                          : datas.displayName.toString() == "SKYE" ||
+                                                  datas.displayName.toString() ==
+                                                      "Skye" ||
+                                                  datas.displayName.toString() ==
+                                                      "سكاي"
                                               ? Image.asset(
                                                   "assets/char/skye.webp")
-                                              : datas?.displayName.toString() ==
-                                                          "CYPHER" ||
-                                                      datas?.displayName.toString() ==
-                                                          "Cypher"
+                                              : datas.displayName.toString() == "CYPHER" ||
+                                                      datas.displayName.toString() ==
+                                                          "Cypher" ||
+                                                      datas.displayName.toString() ==
+                                                          "سايفر"
                                                   ? Image.asset(
                                                       "assets/char/cypher.webp")
-                                                  : datas?.displayName.toString() == "SOVA" ||
-                                                          datas?.displayName.toString() ==
-                                                              "Sova"
+                                                  : datas.displayName.toString() == "SOVA" ||
+                                                          datas.displayName.toString() ==
+                                                              "Sova" ||
+                                                          datas.displayName.toString() ==
+                                                              "سوفا"
                                                       ? Image.asset(
                                                           "assets/char/sova.webp")
-                                                      : datas?.displayName.toString() ==
-                                                                  "KILLJOY" ||
-                                                              datas?.displayName.toString() ==
-                                                                  "Killjoy"
+                                                      : datas.displayName.toString() == "KILLJOY" ||
+                                                              datas.displayName.toString() ==
+                                                                  "Killjoy" ||
+                                                              datas.displayName.toString() == "كيلجوي"
                                                           ? Image.asset("assets/char/killjoy.webp")
-                                                          : datas?.displayName.toString() == "VIPER" || datas?.displayName.toString() == "Viper"
+                                                          : datas.displayName.toString() == "VIPER" || datas.displayName.toString() == "Viper" || datas.displayName.toString() == "فايبر"
                                                               ? Image.asset("assets/char/viper.webp")
-                                                              : datas?.displayName.toString() == "PHOENIX" || datas?.displayName.toString() == "Phoenix"
+                                                              : datas.displayName.toString() == "PHOENIX" || datas.displayName.toString() == "Phoenix" || datas.displayName.toString() == "فينيكس"
                                                                   ? Image.asset("assets/char/phoenix.webp")
-                                                                  : datas?.displayName.toString() == "ASTRA" || datas?.displayName.toString() == "Astra"
+                                                                  : datas.displayName.toString() == "ASTRA" || datas.displayName.toString() == "Astra" || datas.displayName.toString() == "أسترا"
                                                                       ? Image.asset("assets/char/astra.webp")
-                                                                      : datas?.displayName.toString() == "BRIMSTONE" || datas?.displayName.toString() == "Brimstone"
+                                                                      : datas.displayName.toString() == "BRIMSTONE" || datas.displayName.toString() == "Brimstone" || datas.displayName.toString() == "بريمستون"
                                                                           ? Image.asset("assets/char/brim.webp")
-                                                                          : datas?.displayName.toString() == "NEON" || datas?.displayName.toString() == "Neon"
+                                                                          : datas.displayName.toString() == "NEON" || datas.displayName.toString() == "Neon" || datas.displayName.toString() == "نيون"
                                                                               ? Image.asset("assets/char/neon.webp")
-                                                                              : datas?.displayName.toString() == "YORU" || datas?.displayName.toString() == "Yoru"
+                                                                              : datas.displayName.toString() == "YORU" || datas.displayName.toString() == "Yoru" || datas.displayName.toString() == "يورو"
                                                                                   ? Image.asset("assets/char/yoru.webp")
-                                                                                  : datas?.displayName.toString() == "SAGE" || datas?.displayName.toString() == "Sage"
+                                                                                  : datas.displayName.toString() == "SAGE" || datas.displayName.toString() == "Sage" || datas.displayName.toString() == "سايج"
                                                                                       ? Image.asset("assets/char/sage.webp")
-                                                                                      : datas?.displayName.toString() == "REYNA" || datas?.displayName.toString() == "Reyna"
+                                                                                      : datas.displayName.toString() == "REYNA" || datas.displayName.toString() == "Reyna" || datas.displayName.toString() == "ريينا"
                                                                                           ? Image.asset("assets/char/reyna.webp")
-                                                                                          : datas?.displayName.toString() == "OMEN" || datas?.displayName.toString() == "Omen"
+                                                                                          : datas.displayName.toString() == "OMEN" || datas.displayName.toString() == "Omen" || datas.displayName.toString() == "أومين"
                                                                                               ? Image.asset("assets/char/omen.webp")
-                                                                                              : datas?.displayName.toString() == "JETT" || datas?.displayName.toString() == "Jett"
+                                                                                              : datas.displayName.toString() == "JETT" || datas.displayName.toString() == "Jett" || datas.displayName.toString() == "جيت"
                                                                                                   ? Image.asset("assets/char/jett.webp")
                                                                                                   : Image.asset("assets/char/no.png"),
                     ),
@@ -248,11 +260,11 @@ class _CharDetailPageState extends State<CharDetailPage> {
           child: Row(
             children: [
               Text(
-                datas?.displayName.toString() ?? "",
+                datas.displayName.toString(),
                 style: TextStyle(
                   color: Color(
                     int.parse(
-                      "0xff${datas?.backgroundGradientColors![0].substring(0, 6) ?? 0xff}",
+                      "0xff${datas.backgroundGradientColors![0].substring(0, 6)}",
                     ),
                   ),
                   fontSize: 30,
@@ -265,7 +277,7 @@ class _CharDetailPageState extends State<CharDetailPage> {
         Padding(
           padding: defPad,
           child: Text(
-            datas?.description.toString() ?? "",
+            datas.description.toString(),
             style: TextStyle(
               color: Style().textColor,
               fontSize: 48.sp,
@@ -277,11 +289,11 @@ class _CharDetailPageState extends State<CharDetailPage> {
           child: Row(
             children: [
               Text(
-                datas?.role!.displayName.toString() ?? "",
+                datas.role!.displayName.toString(),
                 style: TextStyle(
                   color: Color(
                     int.parse(
-                      "0xff${datas?.backgroundGradientColors![0].substring(0, 6) ?? 0xff}",
+                      "0xff${datas.backgroundGradientColors![0].substring(0, 6)}",
                     ),
                   ),
                   fontSize: 30,
@@ -298,7 +310,7 @@ class _CharDetailPageState extends State<CharDetailPage> {
             alignment: WrapAlignment.start,
             children: [
               ...List.generate(
-                datas?.abilities?.length ?? 0,
+                datas.abilities?.length ?? 0,
                 (index) {
                   return GestureDetector(
                     onTap: () {
@@ -317,7 +329,7 @@ class _CharDetailPageState extends State<CharDetailPage> {
                         color: index == indexAbi
                             ? Color(
                                 int.parse(
-                                  "0xff${datas?.backgroundGradientColors![0].substring(0, 6)}",
+                                  "0xff${datas.backgroundGradientColors![0].substring(0, 6)}",
                                 ),
                               )
                             : Style().primaryColor,
@@ -325,21 +337,20 @@ class _CharDetailPageState extends State<CharDetailPage> {
                             ? BorderRadius.circular(30.r)
                             : BorderRadius.zero,
                       ),
-                      child: datas?.abilities![index].displayIcon == null
+                      child: datas.abilities![index].displayIcon == null
                           ? Image.asset("assets/char/no.png")
                           : Image.network(
-                              datas?.abilities![index].displayIcon.toString() ??
-                                  "",
+                              datas.abilities![index].displayIcon.toString(),
                               fit: BoxFit.contain,
                               color: index != indexAbi
                                   ? Color(
                                       int.parse(
-                                        "0xff${datas?.backgroundGradientColors![0].substring(0, 6)}",
+                                        "0xff${datas.backgroundGradientColors![0].substring(0, 6)}",
                                       ),
                                     )
                                   : Color(
                                       int.parse(
-                                        "0xff${datas?.backgroundGradientColors![1].substring(0, 6)}",
+                                        "0xff${datas.backgroundGradientColors![1].substring(0, 6)}",
                                       ),
                                     ),
                             ),
@@ -357,7 +368,7 @@ class _CharDetailPageState extends State<CharDetailPage> {
             bottom: 100.h,
           ),
           child: Text(
-            datas?.abilities![indexAbi].description.toString() ?? "",
+            datas.abilities![indexAbi].description.toString(),
             style: TextStyle(
               color: Style().textColor,
               fontSize: 48.sp,
