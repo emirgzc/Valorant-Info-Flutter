@@ -1,0 +1,22 @@
+{
+  "welcome": "Welcome to the Valorant Info App. You can access up-to-date map, character and weapon information about Valorant with this application. Our updates will continue. Stay tuned with us.",
+  "guns": "Guns",
+  "characters": "Characters",
+  "maps": "Maps",
+  "news": "News",
+  "skinsLenght": "skins",
+  "titleGun": "ABOUT THE WEAPON",
+  "nameGun": "Name",
+  "typeGun": "Type",
+  "priceGun": "Price",
+  "fireRateGun": "Firing Rate",
+  "armorLenght": "Bullet Capacity",
+  "damageInfo": "DAMAGE INFORMATION",
+  "headName": "Head",
+  "bodyName": "Body",
+  "legsName": "Legs",
+  "gunsColor": "WEAPON COLORS",
+  "playVideo": "Play",
+  "levelGun": "Levels",
+  "pleaseWaitVideo": "Please wait until the video opens..."
+}
