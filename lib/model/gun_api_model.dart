@@ -1,15 +1,15 @@
 class GunApiModel {
   int? status;
-  List<Data>? data;
+  List<DataGun>? data;
 
   GunApiModel({this.status, this.data});
 
   GunApiModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     if (json['data'] != null) {
-      data = <Data>[];
+      data = <DataGun>[];
       json['data'].forEach((v) {
-        data!.add(Data.fromJson(v));
+        data!.add(DataGun.fromJson(v));
       });
     }
   }
@@ -24,7 +24,7 @@ class GunApiModel {
   }
 }
 
-class Data {
+class DataGun {
   String? uuid;
   String? displayName;
   String? category;
@@ -36,7 +36,7 @@ class Data {
   ShopData? shopData;
   List<Skins>? skins;
 
-  Data(
+  DataGun(
       {this.uuid,
       this.displayName,
       this.category,
@@ -48,7 +48,7 @@ class Data {
       this.shopData,
       this.skins});
 
-  Data.fromJson(Map<String, dynamic> json) {
+  DataGun.fromJson(Map<String, dynamic> json) {
     uuid = json['uuid'];
     displayName = json['displayName'];
     category = json['category'];

@@ -1,27 +1,32 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import 'package:valoinfos/pages/home_page.dart';
-import 'package:valoinfos/provider/locale_provider.dart';
-import 'package:valoinfos/utilities/style.dart';
+import 'package:valoinfos/constants/locator.dart';
+import 'package:valoinfos/constants/style.dart';
+import 'package:valoinfos/route_generator.dart';
+import 'package:valoinfos/translations/codegen_loader.g.dart';
+import 'package:valoinfos/viewmodels/data_view_model.dart';
+import 'package:valoinfos/widgets/packages/shimmer/shimmer.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   await EasyLocalization.ensureInitialized();
-
+  setupLocator();
   runApp(
-    EasyLocalization(
-      supportedLocales: const [Locale('tr'), Locale('en'), Locale('ar')],
-      path: 'assets/translation',
-      fallbackLocale: const Locale('tr'),
-      saveLocale: false,
-      useFallbackTranslations: true,
-      startLocale: const Locale('tr'),
-      child: ChangeNotifierProvider(
-        create: (context) => LanguageProvider(),
+    ChangeNotifierProvider(
+      create: (context) => DataViewModel(),
+      child: EasyLocalization(
+        supportedLocales: const [Locale('en'), Locale('tr')],
+        path: 'assets/translations',
+        useOnlyLangCode: true,
+        fallbackLocale: const Locale('tr'),
+        assetLoader: const CodegenLoader(),
         child: const MyApp(),
       ),
     ),
@@ -37,27 +42,40 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   @override
+  void initState() {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
       designSize: const Size(1080, 2280),
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (context, child) {
-        return MaterialApp(
-          localizationsDelegates: context.localizationDelegates,
-          supportedLocales: context.supportedLocales,
-          locale: context.locale,
-          debugShowCheckedModeBanner: false,
-          title: 'Valorant Info',
-          theme: ThemeData(
-            appBarTheme: AppBarTheme(
-              elevation: 0,
-              centerTitle: true,
-              backgroundColor: Style().primaryColor,
+        return Shimmer(
+          linearGradient: Style.shimmerGradient(),
+          child: MaterialApp(
+            localizationsDelegates: context.localizationDelegates,
+            supportedLocales: context.supportedLocales,
+            locale: context.locale,
+            debugShowCheckedModeBanner: false,
+            title: 'Valorant Info',
+            theme: ThemeData(
+              appBarTheme: const AppBarTheme(
+                elevation: 0,
+                centerTitle: true,
+                foregroundColor: Style.darkTextColor,
+                backgroundColor: Style.whiteColor,
+              ),
+              scaffoldBackgroundColor: Style.whiteColor,
             ),
-            scaffoldBackgroundColor: Style().primaryColor,
+            onGenerateRoute: RouteGenerator.routeGenrator,
           ),
-          home: const HomePage(),
         );
       },
     );

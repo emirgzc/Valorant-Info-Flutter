@@ -1,12 +1,12 @@
 class CharOneApiModel {
   int? status;
-  Data? data;
+  DataCharOne? data;
 
   CharOneApiModel({this.status, this.data});
 
   CharOneApiModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
-    data = json['data'] != null ? Data.fromJson(json['data']) : null;
+    data = json['data'] != null ? DataCharOne.fromJson(json['data']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -19,7 +19,7 @@ class CharOneApiModel {
   }
 }
 
-class Data {
+class DataCharOne {
   String? uuid;
   String? displayName;
   String? description;
@@ -42,7 +42,7 @@ class Data {
   List<Abilities>? abilities;
   VoiceLine? voiceLine;
 
-  Data(
+  DataCharOne(
       {this.uuid,
       this.displayName,
       this.description,
@@ -65,7 +65,7 @@ class Data {
       this.abilities,
       this.voiceLine});
 
-  Data.fromJson(Map<String, dynamic> json) {
+  DataCharOne.fromJson(Map<String, dynamic> json) {
     uuid = json['uuid'];
     displayName = json['displayName'];
     description = json['description'];

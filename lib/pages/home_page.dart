@@ -1,236 +1,155 @@
+import 'dart:math';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
-import 'package:valoinfos/pages/char_page.dart';
-import 'package:valoinfos/pages/gun_page.dart';
-import 'package:valoinfos/pages/map_page.dart';
-import 'package:valoinfos/pages/news_page.dart';
-import 'package:valoinfos/provider/locale_provider.dart';
-import 'package:valoinfos/utilities/style.dart';
+import 'package:valoinfos/constants/enums.dart';
+import 'package:valoinfos/constants/extension.dart';
+import 'package:valoinfos/constants/style.dart';
+import 'package:valoinfos/model/char_api_model.dart';
+import 'package:valoinfos/translations/locale_keys.g.dart';
+import 'package:valoinfos/viewmodels/data_view_model.dart';
+import 'package:valoinfos/widgets/custom_appbar.dart';
+import 'package:valoinfos/widgets/packages/cache_image.dart';
+import 'package:valoinfos/widgets/packages/lottie/loading_widget.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({
     Key? key,
   }) : super(key: key);
 
   @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  DataViewModel? _dataViewModel;
+  List<DataChar>? _getChars;
+
+  @override
+  void initState() {
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      _getFutures();
+    });
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    List<Map<String, dynamic>> bottomData = [
-      {
-        "title": "guns".tr(),
-        "icon": "assets/logo/weap.svg",
-        "onPressed": const GunPage(),
-      },
-      {
-        "title": "characters".tr(),
-        "icon": "assets/logo/char.svg",
-        "onPressed": const CharPage(),
-      },
-      {
-        "title": "maps".tr(),
-        "icon": "assets/logo/map-marker.svg",
-        "onPressed": const MapPage(),
-      },
-      {
-        "title": "news".tr(),
-        "icon": "assets/logo/news.svg",
-        "onPressed": const NewsPage(),
-      },
-    ];
+    Random randChar = Random();
+    int rand = randChar.nextInt(20);
+    _dataViewModel ??= Provider.of<DataViewModel>(context, listen: false);
+    String title = 'Valorant Info';
+    String discoverTitle = 'Keşfet';
+    String colorOne = "0xff${_getChars?[rand].backgroundGradientColors![0].substring(0, 6) ?? 0xff}";
     FlutterNativeSplash.remove();
     return Scaffold(
-      appBar: AppBar(
-        leading: Container(
-          margin: EdgeInsets.only(left: 36.w),
-          padding: EdgeInsets.only(left: 24.w),
+      appBar: appBar(context, colorOne),
+      body: body(title, _getChars?[rand].fullPortrait, discoverTitle, context, rand, colorOne),
+    );
+  }
+
+  PreferredSizeWidget appBar(BuildContext context, String colorOne) {
+    return CustomAppBar(
+      leading: Padding(
+        padding: EdgeInsets.all(Style.defaultPaddingSize * .85),
+        child: InkWell(
+          onTap: () {
+            Navigator.pushNamed(context, '/${PageNameEnum.settingsPage.name}');
+          },
           child: SvgPicture.asset(
-            "assets/logo/v2.svg",
-            color: Style().secondaryColor,
+            IconPath.list.name.iconPath,
           ),
         ),
-        actions: [
-          Container(
-            margin: EdgeInsets.only(right: 36.w),
-            child: SvgPicture.asset(
-              "assets/logo/v1.svg",
-              color: Style().secondaryColor,
-              height: 60.h,
-            ),
-          ),
-        ],
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: defPagePadd,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: EdgeInsets.only(top: 32.h),
-                child: Text(
-                  "VALORANT INFO",
-                  style: TextStyle(
-                    fontSize: 82.sp,
-                    color: Style().textColor,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 64.h),
-                child: Text(
-                  "welcome".tr(),
-                  style: TextStyle(
-                    fontSize: 52.sp,
-                    color: Style().textColor,
-                  ),
-                ),
-              ),
-              GridView.builder(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                shrinkWrap: true,
-                physics: const BouncingScrollPhysics(),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  mainAxisSpacing: 24,
-                  crossAxisSpacing: 10,
-                ),
-                itemCount: 4,
-                itemBuilder: (context, index) {
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => bottomData[index]["onPressed"],
-                        ),
-                      );
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.grey.withOpacity(0.14),
-                        borderRadius: BorderRadius.circular(defRadius),
-                      ),
-                      padding: EdgeInsets.all(36.r),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SvgPicture.asset(
-                            bottomData[index]["icon"],
-                            height: 250.h,
-                            color: Style().textColor.withOpacity(0.8),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 16),
-                            child: Text(
-                              bottomData[index]["title"],
-                              style: TextStyle(
-                                color: Style().textColor.withOpacity(0.8),
-                                fontSize: 64.sp,
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
-              Padding(
-                padding: EdgeInsets.only(top: 48.h),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(right: 16),
-                      child: GestureDetector(
-                        onTap: () {
-                          context
-                              .read<LanguageProvider>()
-                              .changeLanguage(context, Language.tr);
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: Style().secondaryColor,
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Center(
-                            child: Text(
-                              "TR",
-                              style: TextStyle(
-                                fontSize: 24,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        context
-                            .read<LanguageProvider>()
-                            .changeLanguage(context, Language.en);
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: Style().secondaryColor,
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Center(
-                          child: Text(
-                            "EN",
-                            style: TextStyle(
-                              fontSize: 24,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        context
-                            .read<LanguageProvider>()
-                            .changeLanguage(context, Language.ar);
-                      },
-                      child: Container(
-                        margin: const EdgeInsets.only(left: 16),
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: Style().secondaryColor,
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Center(
-                          child: Text(
-                            "AR",
-                            style: TextStyle(
-                              fontSize: 24,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
+      actions: [
+        Container(
+          margin: EdgeInsets.only(right: Style.defaultPaddingSize),
+          child: SvgPicture.asset(
+            LogoPath.v1.name.logoPath,
+            color: Color(int.parse(colorOne)),
+            height: 50.h,
           ),
+        ),
+      ],
+    );
+  }
+
+  Widget body(String title, String? image, String discoverTitle, BuildContext context, int rand, String color) {
+    return SingleChildScrollView(
+      child: Padding(
+        padding: Style.pagePadding,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: EdgeInsets.only(top: Style.defaultPaddingSize * 0.5, bottom: Style.defaultPaddingSize),
+              child: headTitle(title, Color(int.parse(color))),
+            ),
+            desc(LocaleKeys.welcome.tr()),
+            Stack(
+              children: [
+                imageBack(_getChars?[rand].background, Color(int.parse(color))),
+                image == null ? const LoadingWidget() : imageLearn(image),
+              ],
+            ),
+            //discovers(discoverTitle, context),
+          ],
         ),
       ),
     );
   }
 
-  AppBar getAppBar() {
-    return AppBar(
-      title: const Text("Valorant"),
+  Widget imageLearn(String? image) {
+    return Center(
+      child: CacheImage(
+        image: image,
+        fit: BoxFit.cover,
+        height: 1150.h,
+      ),
     );
+  }
+
+  Widget imageBack(String? image, Color? color) {
+    return Center(
+      child: CacheImage(
+        image: image,
+        fit: BoxFit.cover,
+        height: 1150.h,
+        color: color,
+      ),
+    );
+  }
+
+  Widget desc(String description) {
+    return Text(
+      description,
+      style: context.theme.titleMedium,
+    );
+  }
+
+  Widget headTitle(String title, Color? color) {
+    return Text(
+      title,
+      style: context.theme.headlineMedium!.copyWith(
+        color: color,
+        fontWeight: FontWeight.bold,
+      ),
+    );
+  }
+
+  Future<void> _getFutures() async {
+    try {
+      await _dataViewModel!.getChars(context.locale).then(
+            (value) => _getChars = value,
+          );
+      setState(() {});
+    } catch (e) {
+      debugPrint(e.toString());
+    }
   }
 }

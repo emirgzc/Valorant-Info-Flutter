@@ -1,15 +1,15 @@
 class NewsApiModel {
   int? status;
-  List<Data>? data;
+  List<DataNews>? data;
 
   NewsApiModel({this.status, this.data});
 
   NewsApiModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     if (json['data'] != null) {
-      data = <Data>[];
+      data = <DataNews>[];
       json['data'].forEach((v) {
-        data!.add(Data.fromJson(v));
+        data!.add(DataNews.fromJson(v));
       });
     }
   }
@@ -24,7 +24,7 @@ class NewsApiModel {
   }
 }
 
-class Data {
+class DataNews {
   String? uuid;
   String? displayName;
   String? displayNameSubText;
@@ -37,7 +37,7 @@ class Data {
   String? verticalPromoImage;
   String? assetPath;
 
-  Data(
+  DataNews(
       {this.uuid,
       this.displayName,
       this.displayNameSubText,
@@ -50,7 +50,7 @@ class Data {
       this.verticalPromoImage,
       this.assetPath});
 
-  Data.fromJson(Map<String, dynamic> json) {
+  DataNews.fromJson(Map<String, dynamic> json) {
     uuid = json['uuid'];
     displayName = json['displayName'];
     displayNameSubText = json['displayNameSubText'];

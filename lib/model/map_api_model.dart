@@ -1,15 +1,15 @@
 class MapApiModel {
   int? status;
-  List<Data>? data;
+  List<DataMap>? data;
 
   MapApiModel({this.status, this.data});
 
   MapApiModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     if (json['data'] != null) {
-      data = <Data>[];
+      data = <DataMap>[];
       json['data'].forEach((v) {
-        data!.add(Data.fromJson(v));
+        data!.add(DataMap.fromJson(v));
       });
     }
   }
@@ -24,7 +24,7 @@ class MapApiModel {
   }
 }
 
-class Data {
+class DataMap {
   String? uuid;
   String? displayName;
   String? coordinates;
@@ -35,7 +35,7 @@ class Data {
   String? mapUrl;
   List<Callouts>? callouts;
 
-  Data(
+  DataMap(
       {this.uuid,
       this.displayName,
       this.coordinates,
@@ -46,7 +46,7 @@ class Data {
       this.mapUrl,
       this.callouts});
 
-  Data.fromJson(Map<String, dynamic> json) {
+  DataMap.fromJson(Map<String, dynamic> json) {
     uuid = json['uuid'];
     displayName = json['displayName'];
     coordinates = json['coordinates'];

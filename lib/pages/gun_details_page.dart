@@ -2,109 +2,27 @@ import 'package:bordered_text/bordered_text.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
+import 'package:valoinfos/constants/enums.dart';
+import 'package:valoinfos/constants/extension.dart';
+import 'package:valoinfos/constants/style.dart';
 import 'package:valoinfos/model/gun_api_model.dart';
 import 'package:valoinfos/pages/gun_skins_page.dart';
-import 'package:valoinfos/utilities/reklam.dart';
-import 'package:valoinfos/utilities/style.dart';
+import 'package:valoinfos/translations/locale_keys.g.dart';
+import 'package:valoinfos/utilities/strings.dart';
+import 'package:valoinfos/widgets/custom_appbar.dart';
+import 'package:valoinfos/widgets/packages/cache_image.dart';
 
 class GunDetailsPage extends StatefulWidget {
-  GunDetailsPage({Key? key, required this.gunApiModel}) : super(key: key) {
-    initAd();
-  }
-  final Data gunApiModel;
+  const GunDetailsPage({Key? key, required this.gunApiModel}) : super(key: key);
+  final DataGun gunApiModel;
 
   @override
   State<GunDetailsPage> createState() => _GunDetailsState();
-  late InterstitialAd interstitialAd;
-  bool isAdLoaded = false;
-
-  void initAd() {
-    InterstitialAd.load(
-      adUnitId: reklamGecis,
-      request: const AdRequest(),
-      adLoadCallback: InterstitialAdLoadCallback(
-        onAdLoaded: onAdLoaded,
-        onAdFailedToLoad: (error) {},
-      ),
-    );
-  }
-
-  void onAdLoaded(InterstitialAd ad) {
-    interstitialAd = ad;
-    isAdLoaded = true;
-
-    interstitialAd.fullScreenContentCallback = FullScreenContentCallback(
-      onAdDismissedFullScreenContent: (ad) {
-        interstitialAd.dispose();
-      },
-      onAdFailedToShowFullScreenContent: (ad, error) {
-        interstitialAd.dispose();
-      },
-    );
-  }
 }
 
 class _GunDetailsState extends State<GunDetailsPage> {
-  late BannerAd staticAd;
-  bool staticAdLoaded = false;
-  late BannerAd inlineAd;
-  bool inlineAdloaded = false;
-
-  static const AdRequest request = AdRequest();
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    loadInlineBannerAd();
-  }
-
-  void loadStaticBannerAd() {
-    staticAd = BannerAd(
-      adUnitId: reklamBanner,
-      size: AdSize.banner,
-      request: request,
-      listener: BannerAdListener(
-        onAdLoaded: (ad) {
-          setState(
-            () {
-              staticAdLoaded = true;
-            },
-          );
-        },
-        onAdFailedToLoad: (ad, error) {
-          ad.dispose();
-          debugPrint("error : ${error.message}");
-        },
-      ),
-    );
-    staticAd.load();
-  }
-
-  void loadInlineBannerAd() {
-    inlineAd = BannerAd(
-      adUnitId: reklamBanner,
-      size: AdSize.banner,
-      request: request,
-      listener: BannerAdListener(
-        onAdLoaded: (ad) {
-          setState(
-            () {
-              inlineAdloaded = true;
-            },
-          );
-        },
-        onAdFailedToLoad: (ad, error) {
-          ad.dispose();
-          debugPrint("error : ${error.message}");
-        },
-      ),
-    );
-    inlineAd.load();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -115,14 +33,55 @@ class _GunDetailsState extends State<GunDetailsPage> {
 
   Widget gunDetailBody() {
     return SingleChildScrollView(
-      child: Column(
-        children: [
-          gunImageAndText(),
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 90.h, horizontal: 40.w),
-            child: gunInfos(),
-          ),
-        ],
+      child: Padding(
+        padding: Style.pagePadding,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            gunTitle(),
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: Style.defaultPaddingSize * 2.3),
+              child: gunImage(),
+            ),
+            gunInfos(),
+            SizedBox(height: 200.h),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget gunImage() {
+    return Center(
+      child: Hero(
+        tag: widget.gunApiModel.uuid ?? StringData.noData,
+        child: CacheImage(
+          image: widget.gunApiModel.displayIcon,
+          fit: BoxFit.contain,
+          height: 270.h,
+        ),
+      ),
+    );
+  }
+
+  Widget gunTitle() {
+    return BorderedText(
+      strokeWidth: 1.0,
+      strokeColor: Style.primaryColor.withOpacity(0.7),
+      child: Text(
+        widget.gunApiModel.displayName ?? StringData.noData,
+        style: TextStyle(
+          color: Style.primaryColor,
+          fontSize: 100.sp,
+          fontWeight: FontWeight.bold,
+          shadows: [
+            Shadow(
+              blurRadius: 5,
+              color: Style.primaryColor.withOpacity(0.16),
+              offset: const Offset(4, 7),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -131,183 +90,207 @@ class _GunDetailsState extends State<GunDetailsPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
+        /* Padding(
           padding: EdgeInsets.only(bottom: 60.h),
-          child: bigTitle("titleGun".tr()),
-        ),
+          child: bigTitle("titleGun".tr()),s
+        ), */
         titleRow(
-          "${"nameGun".tr()} : ",
-          widget.gunApiModel.displayName.toString(),
+          "${LocaleKeys.nameGun.tr()} : ",
+          widget.gunApiModel.displayName,
         ),
         Padding(
-          padding: EdgeInsets.only(top: 40.h),
+          padding: EdgeInsets.symmetric(vertical: ((Style.defaultPaddingSize / 2) * 5).h),
           child: titleRow(
-            "${"typeGun".tr()} : ",
-            widget.gunApiModel.shopData?.categoryText!.toString(),
+            "${LocaleKeys.typeGun.tr()} : ",
+            widget.gunApiModel.shopData?.categoryText ?? StringData.noData,
+          ),
+        ),
+        gunInfoRow(
+          "${LocaleKeys.fireRateGun.tr()} : ",
+          widget.gunApiModel.weaponStats?.fireRate.toString() ?? StringData.noData,
+        ),
+        Padding(
+          padding: EdgeInsets.only(top: Style.defaultPaddingSize),
+          child: gunInfoRow(
+            "${LocaleKeys.armorLenght.tr()} : ",
+            widget.gunApiModel.weaponStats?.magazineSize.toString() ?? StringData.noData,
           ),
         ),
         Padding(
-          padding: EdgeInsets.symmetric(vertical: 40.h),
-          child: titleWithIcon(),
-        ),
-        Row(
-          children: [
-            Text(
-              "${"fireRateGun".tr()} : ",
-              style: TextStyle(fontSize: 48.sp, color: Style().textColor),
-            ),
-            widget.gunApiModel.weaponStats.toString() == "null"
-                ? Text(
-                    "0",
-                    style: TextStyle(
-                      fontSize: 48.sp,
-                      color: Style().secondaryColor,
-                    ),
-                  )
-                : Text(
-                    " ${widget.gunApiModel.weaponStats!.fireRate}",
-                    style: TextStyle(
-                      fontSize: 48.sp,
-                      color: Style().secondaryColor,
-                    ),
-                  ),
-          ],
+          padding: EdgeInsets.only(top: Style.defaultPaddingSize),
+          child: buttons(),
         ),
         Padding(
-          padding: EdgeInsets.symmetric(vertical: 40.h),
+          padding: EdgeInsets.only(top: Style.defaultPaddingSize * 1.4),
+          child: Row(
+            children: [
+              widget.gunApiModel.weaponStats != null ? bigTitle(LocaleKeys.damageInfo.tr()) : const SizedBox.shrink(),
+            ],
+          ),
+        ),
+        widget.gunApiModel.weaponStats != null ? damageList() : const SizedBox.shrink(),
+      ],
+    );
+  }
+
+  Widget gunInfoRow(String title, String? item) {
+    return Row(
+      children: [
+        Text(
+          title,
+          style: context.theme.titleMedium!.copyWith(
+            color: Style.darkTextColor,
+          ),
+        ),
+        Text(
+          item ?? StringData.noData,
+          style: context.theme.titleMedium!.copyWith(
+            color: Style.primaryColor,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget damageList() {
+    return ListView.builder(
+      itemCount: widget.gunApiModel.weaponStats!.damageRanges!.length,
+      shrinkWrap: true,
+      physics: const BouncingScrollPhysics(),
+      itemBuilder: (context, index) {
+        return Column(
+          children: [
+            Padding(
+              padding: EdgeInsets.only(top: Style.defaultPaddingSize * 1),
+              child: Row(
+                children: [
+                  Text(
+                    "${widget.gunApiModel.weaponStats?.damageRanges?[index].rangeStartMeters ?? StringData.noData}m - ${widget.gunApiModel.weaponStats?.damageRanges?[index].rangeEndMeters ?? StringData.noData}m",
+                    style: context.theme.titleLarge!.copyWith(
+                      color: Style.darkTextColor,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: Style.defaultPaddingSize * 0.5),
+              child: indicatorItem(
+                index,
+                LocaleKeys.headName.tr(),
+                widget.gunApiModel.weaponStats?.damageRanges?[index].headDamage.toString(),
+              ),
+            ),
+            linearIndicator(
+              index,
+              widget.gunApiModel.weaponStats?.damageRanges?[index].headDamage.toString(),
+              0.7,
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: Style.defaultPaddingSize * 0.4),
+              child: indicatorItem(
+                index,
+                LocaleKeys.bodyName.tr(),
+                widget.gunApiModel.weaponStats?.damageRanges?[index].bodyDamage.toString(),
+              ),
+            ),
+            linearIndicator(
+              index,
+              widget.gunApiModel.weaponStats?.damageRanges?[index].bodyDamage.toString(),
+              0.4,
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: Style.defaultPaddingSize * 0.4),
+              child: indicatorItem(
+                index,
+                LocaleKeys.legsName.tr(),
+                widget.gunApiModel.weaponStats?.damageRanges?[index].legDamage.toString(),
+              ),
+            ),
+            linearIndicator(
+              index,
+              widget.gunApiModel.weaponStats?.damageRanges?[index].legDamage.toString(),
+              0.15,
+            ),
+            index == (widget.gunApiModel.weaponStats?.damageRanges?.length ?? 0) - 1 ? const SizedBox.shrink() : divider(),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget divider() {
+    return Container(
+      margin: EdgeInsets.only(top: 60.h),
+      height: 3.h,
+      width: double.infinity,
+      color: Style.darkTextColor.withOpacity(0.4),
+    );
+  }
+
+  Widget buttons() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Style.primaryColor,
+          ),
+          onPressed: null,
           child: Row(
             children: [
               Text(
-                "${"armorLenght".tr()} : ",
-                style: TextStyle(fontSize: 48.sp, color: Style().textColor),
+                "${LocaleKeys.priceGun.tr()} : ",
+                style: context.theme.titleMedium!.copyWith(
+                  color: Style.primaryColor,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-              widget.gunApiModel.weaponStats.toString() == "null"
+              Padding(
+                padding: EdgeInsets.only(right: Style.defaultPaddingSize / 4),
+                child: Image.asset(
+                  "assets/images/creditIcon.webp",
+                  color: Style.primaryColor,
+                ),
+              ),
+              widget.gunApiModel.shopData == null
                   ? Text(
-                      "0",
-                      style: TextStyle(
-                        fontSize: 48.sp,
-                        color: Style().secondaryColor,
+                      LocaleKeys.free.tr(),
+                      style: context.theme.titleMedium!.copyWith(
+                        color: Style.primaryColor,
+                        fontWeight: FontWeight.bold,
                       ),
                     )
                   : Text(
-                      " ${widget.gunApiModel.weaponStats!.magazineSize}",
-                      style: TextStyle(
-                        fontSize: 48.sp,
-                        color: Style().secondaryColor,
+                      " ${widget.gunApiModel.shopData?.cost ?? StringData.noData}",
+                      style: context.theme.titleMedium!.copyWith(
+                        color: Style.primaryColor,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
             ],
           ),
         ),
-        Padding(
-          padding: EdgeInsets.only(top: 60.h),
-          child: Row(
-            children: [
-              bigTitle("damageInfo".tr()),
-            ],
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Style.primaryColor,
           ),
-        ),
-        widget.gunApiModel.weaponStats != null
-            ? ListView.builder(
-                itemCount: widget.gunApiModel.weaponStats!.damageRanges!.length,
-                shrinkWrap: true,
-                physics: const BouncingScrollPhysics(),
-                itemBuilder: (context, index) {
-                  return Column(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(top: 60.h),
-                        child: Row(
-                          children: [
-                            Text(
-                              "${widget.gunApiModel.weaponStats!.damageRanges![index].rangeStartMeters!}m - ${widget.gunApiModel.weaponStats!.damageRanges![index].rangeEndMeters}m",
-                              style: TextStyle(
-                                fontSize: 60.sp,
-                                color: Style().textColor,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(vertical: 30.h),
-                        child: indicatorItem(
-                          index,
-                          "headName".tr(),
-                          widget.gunApiModel.weaponStats!.damageRanges![index]
-                              .headDamage
-                              .toString(),
-                        ),
-                      ),
-                      linearIndicator(
-                        index,
-                        widget.gunApiModel.weaponStats!.damageRanges![index]
-                            .headDamage
-                            .toString(),
-                        0.7,
-                      ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(vertical: 24.h),
-                        child: indicatorItem(
-                          index,
-                          "bodyName".tr(),
-                          widget.gunApiModel.weaponStats!.damageRanges![index]
-                              .bodyDamage
-                              .toString(),
-                        ),
-                      ),
-                      linearIndicator(
-                        index,
-                        widget.gunApiModel.weaponStats!.damageRanges![index]
-                            .bodyDamage
-                            .toString(),
-                        0.4,
-                      ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(vertical: 24.h),
-                        child: indicatorItem(
-                          index,
-                          "legsName".tr(),
-                          widget.gunApiModel.weaponStats!.damageRanges![index]
-                              .legDamage
-                              .toString(),
-                        ),
-                      ),
-                      linearIndicator(
-                        index,
-                        widget.gunApiModel.weaponStats!.damageRanges![index]
-                            .legDamage
-                            .toString(),
-                        0.15,
-                      ),
-                      index ==
-                              widget.gunApiModel.weaponStats!.damageRanges!
-                                      .length -
-                                  1
-                          ? Container()
-                          : Container(
-                              margin: EdgeInsets.only(top: 60.h),
-                              height: 3.h,
-                              width: double.infinity,
-                              color: Style().textColor.withOpacity(0.4),
-                            ),
-                    ],
-                  );
-                },
-              )
-            : Text(
-                "--Not Found--",
-                style: TextStyle(
-                  color: Style().textColor,
-                  fontSize: 60.sp,
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => GunSkinPage(
+                  skinsUid: widget.gunApiModel,
                 ),
               ),
-        Container(
-          margin: EdgeInsets.symmetric(vertical: 32.h),
-          width: inlineAd.size.width.toDouble(),
-          height: inlineAd.size.height.toDouble(),
-          child: AdWidget(
-            ad: inlineAd,
+            );
+          },
+          child: Text(
+            LocaleKeys.allSkin.tr(),
+            style: context.theme.titleMedium!.copyWith(
+              fontWeight: FontWeight.bold,
+              color: Style.whiteColor,
+            ),
           ),
         ),
       ],
@@ -316,16 +299,19 @@ class _GunDetailsState extends State<GunDetailsPage> {
 
   Widget linearIndicator(int index, String? data, double percent) {
     return LinearPercentIndicator(
-      barRadius: Radius.circular(defRadius),
+      barRadius: Radius.circular(Style.defaultRadiusSize),
       animation: true,
-      lineHeight: 70.h,
+      lineHeight: 52.h,
       padding: EdgeInsets.zero,
-      animationDuration: 1300,
+      animationDuration: 2000,
       percent: percent,
       center: Text(
-        data ?? "",
+        data?.split('.')[0] ?? StringData.noData,
+        style: context.theme.bodySmall!.copyWith(
+          fontWeight: FontWeight.bold,
+        ),
       ),
-      progressColor: Style().secondaryColor,
+      progressColor: Style.primaryColor,
     );
   }
 
@@ -335,45 +321,16 @@ class _GunDetailsState extends State<GunDetailsPage> {
       children: [
         Text(
           title,
-          style: TextStyle(
-            fontSize: 48.sp,
-            color: Style().textColor,
+          style: context.theme.bodyLarge!.copyWith(
+            fontWeight: FontWeight.bold,
           ),
         ),
         Text(
-          data ?? "",
-          style: TextStyle(
-            fontSize: 48.sp,
-            color: Style().textColor,
+          data?.split('.')[0] ?? StringData.noData,
+          style: context.theme.bodyLarge!.copyWith(
+            fontWeight: FontWeight.bold,
           ),
         ),
-      ],
-    );
-  }
-
-  Widget titleWithIcon() {
-    return Row(
-      children: [
-        Text(
-          "${"priceGun".tr()} : ",
-          style: TextStyle(fontSize: 48.sp, color: Style().textColor),
-        ),
-        Image.asset("assets/char/creditIcon.webp"),
-        widget.gunApiModel.shopData.toString() == "null"
-            ? Text(
-                "Ücretsiz",
-                style: TextStyle(
-                  fontSize: 48.sp,
-                  color: Style().secondaryColor,
-                ),
-              )
-            : Text(
-                " ${widget.gunApiModel.shopData!.cost}",
-                style: TextStyle(
-                  fontSize: 48.sp,
-                  color: Style().secondaryColor,
-                ),
-              ),
       ],
     );
   }
@@ -383,16 +340,14 @@ class _GunDetailsState extends State<GunDetailsPage> {
       children: [
         Text(
           title,
-          style: TextStyle(
-            fontSize: 48.sp,
-            color: Style().textColor,
+          style: context.theme.titleMedium!.copyWith(
+            color: Style.darkTextColor,
           ),
         ),
         Text(
-          data ?? "",
-          style: TextStyle(
-            fontSize: 48.sp,
-            color: Style().secondaryColor,
+          data ?? StringData.noData,
+          style: context.theme.titleMedium!.copyWith(
+            color: Style.primaryColor,
           ),
         ),
       ],
@@ -404,95 +359,21 @@ class _GunDetailsState extends State<GunDetailsPage> {
       children: [
         Text(
           bigTitle,
-          style: TextStyle(
-            fontSize: 74.sp,
-            color: Style().textColor,
-          ),
+          style: context.theme.titleLarge,
         ),
       ],
     );
   }
 
-  Widget gunImageAndText() {
-    return Container(
-      padding: EdgeInsets.symmetric(
-        vertical: 120.h,
-        horizontal: 40.w,
-      ),
-      width: double.infinity,
-      color: Style().secondaryColor,
-      child: Stack(
-        children: [
-          Positioned(
-            bottom: -42.h,
-            child: BorderedText(
-              strokeWidth: 1.0,
-              strokeColor: Style().iconColor.withOpacity(0.7),
-              child: Text(
-                widget.gunApiModel.displayName.toString(),
-                style: TextStyle(
-                  color: Style().secondaryColor,
-                  fontSize: 180.sp,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ),
-          Center(
-            child: Image.network(
-              widget.gunApiModel.displayIcon.toString(),
-              fit: BoxFit.contain,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  AppBar getAppBar(BuildContext context) {
-    return AppBar(
-      toolbarHeight: 190.h,
-      backgroundColor: Style().secondaryColor,
-      elevation: 0,
+  PreferredSizeWidget getAppBar(BuildContext context) {
+    return CustomAppBar(
       leading: IconButton(
-        onPressed: () {
-          Navigator.pop(context);
-        },
-        icon: Icon(
-          Icons.arrow_back,
-          color: Style().iconColor,
+        onPressed: () => Navigator.pop(context),
+        icon: SvgPicture.asset(
+          IconPath.back.name.iconPath,
+          height: Style.defaultPaddingSize * 1.3,
         ),
       ),
-      actions: [
-        Container(
-          margin: EdgeInsets.only(right: 40.w, top: 30.h),
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: Style().primaryColor,
-          ),
-          child: IconButton(
-            onPressed: () {
-              if (widget.isAdLoaded) {
-                widget.interstitialAd.show();
-              }
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) {
-                    return GunSkinPage(
-                      skinsUid: widget.gunApiModel.skins,
-                    );
-                  },
-                ),
-              );
-            },
-            icon: Icon(
-              Icons.menu,
-              color: Style().iconColor,
-            ),
-          ),
-        ),
-      ],
     );
   }
 }

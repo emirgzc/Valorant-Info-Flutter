@@ -1,13 +1,19 @@
 import 'package:bordered_text/bordered_text.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import 'package:valoinfos/data/api_client.dart';
+import 'package:valoinfos/constants/enums.dart';
+import 'package:valoinfos/constants/extension.dart';
+import 'package:valoinfos/constants/style.dart';
 import 'package:valoinfos/model/gun_api_model.dart';
-import 'package:valoinfos/pages/gun_details_page.dart';
-import 'package:valoinfos/provider/locale_provider.dart';
-import 'package:valoinfos/utilities/style.dart';
+import 'package:valoinfos/translations/locale_keys.g.dart';
+import 'package:valoinfos/utilities/strings.dart';
+import 'package:valoinfos/viewmodels/data_view_model.dart';
+import 'package:valoinfos/widgets/custom_appbar.dart';
+import 'package:valoinfos/widgets/packages/cache_image.dart';
+import 'package:valoinfos/widgets/packages/lottie/loading_widget.dart';
 
 class GunPage extends StatefulWidget {
   const GunPage({Key? key}) : super(key: key);
@@ -17,118 +23,86 @@ class GunPage extends StatefulWidget {
 }
 
 class _GunPageState extends State<GunPage> {
-  int charIndex = 0;
-  String appTitle = "guns".tr();
+  DataViewModel? _dataViewModel;
+  List<DataGun>? _getGuns;
+
+  bool isAnimation = false;
+
   @override
   void initState() {
-    // TODO: implement initState
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      _getFutures();
+      setState(() {
+        isAnimation = true;
+      });
+    });
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(appTitle),
+      appBar: CustomAppBar(
+        title: Text(LocaleKeys.guns.tr()),
       ),
-      body: gunPageBody(),
+      body: gunPageBody(context),
     );
   }
 
-  Widget gunPageBody() {
-    var languageCode =
-        Provider.of<LanguageProvider>(context, listen: false).locale;
-    debugPrint(languageCode.toString());
-
+  Widget gunPageBody(BuildContext context) {
+    _dataViewModel ??= Provider.of<DataViewModel>(context, listen: false);
     return SingleChildScrollView(
       child: Padding(
-        padding: defPagePadd,
-        child: Column(
+        padding: Style.pagePadding,
+        child: _getGuns != null ? gunList(_getGuns) : const LoadingWidget(),
+      ),
+    );
+  }
+
+  Widget gunList(List<DataGun>? datas) {
+    return GridView.builder(
+      physics: const BouncingScrollPhysics(),
+      shrinkWrap: true,
+      itemCount: datas?.length ?? 0,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: Style.defautlCrossAxisCount,
+        mainAxisSpacing: 40.h,
+        crossAxisSpacing: 50.w,
+      ),
+      itemBuilder: (context, index) {
+        return gunCard(context, datas, index);
+      },
+    );
+  }
+
+  Widget gunCard(BuildContext context, List<DataGun>? datas, int index) {
+    return GestureDetector(
+      onTap: () => Navigator.pushNamed(
+        context,
+        '/${PageNameEnum.gunDetailPage.name}',
+        arguments: datas?[index],
+      ),
+      child: AnimatedContainer(
+        duration: Duration(milliseconds: 300 + (index * 100)),
+        transform: Matrix4.translationValues(
+          isAnimation ? 0 : MediaQuery.of(context).size.width,
+          0,
+          0,
+        ),
+        curve: Curves.easeInOut,
+        child: Stack(
           children: [
-            FutureBuilder(
-              future: ApiClient().getGuns(languageCode),
-              builder: (context, snapshot) {
-                var datas = snapshot.data as List<Data>?;
-                if (snapshot.connectionState == ConnectionState.done &&
-                    snapshot.hasData &&
-                    snapshot.data != null) {
-                  return gunList(datas);
-                } else {
-                  return buildLastProcessCardEffect(
-                    effectGunCard(),
-                    context,
-                  );
-                }
-              },
-            ),
+            gunImage(datas, index),
+            gunNameTitle(datas, index),
+            skinLengthTitle(datas, index),
           ],
         ),
       ),
     );
   }
 
-  Widget effectGunCard() {
-    return GridView.builder(
-      physics: const BouncingScrollPhysics(),
-      shrinkWrap: true,
-      itemCount: 8,
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        mainAxisSpacing: 40.h,
-        crossAxisSpacing: 50.w,
-      ),
-      itemBuilder: (context, index) {
-        return Container(
-          margin: const EdgeInsets.only(bottom: 10),
-          padding: const EdgeInsets.symmetric(
-            vertical: 8,
-            horizontal: 16,
-          ),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(4),
-            color: Style().secondaryColor,
-          ),
-          child: const Text("sadasddsdasdad"),
-        );
-      },
-    );
-  }
-
-  Widget gunList(List<Data>? datas) {
-    return GridView.builder(
-      physics: const BouncingScrollPhysics(),
-      shrinkWrap: true,
-      itemCount: datas?.length ?? 0,
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        mainAxisSpacing: 40.h,
-        crossAxisSpacing: 50.w,
-      ),
-      itemBuilder: (context, index) {
-        return GestureDetector(
-          onTap: () => Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => GunDetailsPage(
-                gunApiModel: datas![index],
-              ),
-            ),
-          ),
-          child: Stack(
-            children: [
-              gunImage(datas, index),
-              gunNameTitle(datas, index),
-              skinLengthTitle(datas, index),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  Widget gunImage(List<Data>? datas, int index) {
+  Widget gunImage(List<DataGun>? datas, int index) {
     return Container(
-      width: double.infinity,
       height: double.infinity,
       padding: EdgeInsets.symmetric(
         horizontal: 40.w,
@@ -137,22 +111,21 @@ class _GunPageState extends State<GunPage> {
       decoration: BoxDecoration(
         border: Border.all(
           width: 1,
-          color: Colors.grey.withOpacity(0.2),
+          color: Style.darkTextColor.withOpacity(0.27),
         ),
-        color: Colors.grey.withOpacity(0.2),
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(defRadius),
-          bottomRight: Radius.circular(defRadius),
-        ),
+        color: Style.darkTextColor.withOpacity(0.17),
       ),
-      child: Image.network(
-        datas?[index].displayIcon.toString() ?? "",
-        fit: BoxFit.contain,
+      child: Hero(
+        tag: datas?[index].uuid ?? StringData.noData,
+        child: CacheImage(
+          image: datas?[index].displayIcon,
+          fit: BoxFit.contain,
+        ),
       ),
     );
   }
 
-  Widget gunNameTitle(List<Data>? datas, int index) {
+  Widget gunNameTitle(List<DataGun>? datas, int index) {
     return Positioned(
       top: 0,
       child: Padding(
@@ -162,13 +135,11 @@ class _GunPageState extends State<GunPage> {
         ),
         child: BorderedText(
           strokeWidth: 1.0,
-          strokeColor: Style().textColor.withOpacity(0.5),
+          strokeColor: Style.darkTextColor.withOpacity(0.9),
           child: Text(
-            "${datas?[index].displayName ?? ""}.",
-            style: TextStyle(
-              color: Colors.grey.withOpacity(0.15),
-              letterSpacing: 2,
-              fontSize: 48.sp,
+            "${datas?[index].displayName ?? StringData.noData}.",
+            style: context.theme.titleMedium!.copyWith(
+              letterSpacing: 1.5,
             ),
           ),
         ),
@@ -176,25 +147,35 @@ class _GunPageState extends State<GunPage> {
     );
   }
 
-  Widget skinLengthTitle(List<Data>? datas, int index) {
+  Widget skinLengthTitle(List<DataGun>? datas, int index) {
     return Positioned(
       bottom: 0,
       right: 0,
       child: Padding(
-        padding: EdgeInsets.only(bottom: 30.h, right: 30.w),
+        padding: EdgeInsets.only(
+          bottom: Style.defaultPaddingSize * 0.6,
+          right: Style.defaultPaddingSize * 0.6,
+        ),
         child: BorderedText(
           strokeWidth: 1.0,
-          strokeColor: Style().textColor.withOpacity(0.5),
+          strokeColor: Style.darkTextColor.withOpacity(0.8),
           child: Text(
-            "${datas?[index].skins!.length ?? ""} ${"skinsLenght".tr()}",
-            style: TextStyle(
-              color: Colors.grey.withOpacity(0.15),
-              letterSpacing: 2,
-              fontSize: 30.sp,
-            ),
+            "${datas?[index].skins?.length ?? StringData.noData} ${LocaleKeys.skinsLenght.tr()}",
+            style: context.theme.bodySmall!.copyWith(letterSpacing: 1.1),
           ),
         ),
       ),
     );
+  }
+
+  Future<void> _getFutures() async {
+    try {
+      await _dataViewModel!.getGuns(context.locale).then(
+            (value) => _getGuns = value,
+          );
+      setState(() {});
+    } catch (e) {
+      debugPrint(e.toString());
+    }
   }
 }

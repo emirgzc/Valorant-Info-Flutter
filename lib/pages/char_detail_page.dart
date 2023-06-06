@@ -1,441 +1,351 @@
 import 'package:bordered_text/bordered_text.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
-import 'package:valoinfos/data/api_client.dart';
+import 'package:valoinfos/constants/enums.dart';
+import 'package:valoinfos/constants/extension.dart';
+import 'package:valoinfos/constants/style.dart';
 import 'package:valoinfos/model/char_one_api_model.dart';
 import 'package:valoinfos/pages/sound.dart';
-import 'package:valoinfos/provider/locale_provider.dart';
-import 'package:valoinfos/utilities/reklam.dart';
-import 'package:valoinfos/utilities/style.dart';
+import 'package:valoinfos/utilities/strings.dart';
+import 'package:valoinfos/viewmodels/data_view_model.dart';
+import 'package:valoinfos/widgets/custom_appbar.dart';
+import 'package:valoinfos/widgets/packages/cache_image.dart';
+import 'package:valoinfos/widgets/packages/lottie/loading_widget.dart';
 
 class CharDetailPage extends StatefulWidget {
-  CharDetailPage({Key? key, required this.charUidd}) : super(key: key) {
-    _initAd();
-  }
+  const CharDetailPage({Key? key, required this.charUidd}) : super(key: key);
   final String charUidd;
 
   @override
   State<CharDetailPage> createState() => _CharDetailPageState();
-  late InterstitialAd interstitialAd;
-  bool isAdLoaded = false;
-
-  void _initAd() {
-    InterstitialAd.load(
-      adUnitId: reklamGecis,
-      request: const AdRequest(),
-      adLoadCallback: InterstitialAdLoadCallback(
-        onAdLoaded: onAdLoaded,
-        onAdFailedToLoad: (error) {},
-      ),
-    );
-  }
-
-  void onAdLoaded(InterstitialAd ad) {
-    interstitialAd = ad;
-    isAdLoaded = true;
-
-    interstitialAd.fullScreenContentCallback = FullScreenContentCallback(
-      onAdDismissedFullScreenContent: (ad) {
-        interstitialAd.dispose();
-      },
-      onAdFailedToShowFullScreenContent: (ad, error) {
-        interstitialAd.dispose();
-      },
-    );
-  }
 }
 
 class _CharDetailPageState extends State<CharDetailPage> {
-  ApiClient apiClient = ApiClient();
-  Data? datal;
+  DataViewModel? _dataViewModel;
+  DataCharOne? _dataCharOne;
   int indexAbi = 0;
-
-  EdgeInsets defPad = EdgeInsets.symmetric(horizontal: 60.w, vertical: 24.h);
+  DataCharOne? _getCharDetail;
 
   @override
   void initState() {
-    var languageCode =
-        Provider.of<LanguageProvider>(context, listen: false).locale;
-    apiClient
-        .getDetailForChar(
-          widget.charUidd,
-          languageCode,
-        )
-        .then(
-          (value) => {
-            setState(() {
-              datal = value;
-            })
-          },
-        );
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      _getFutures();
+      _getColors();
+    });
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    var languageCode =
-        Provider.of<LanguageProvider>(context, listen: true).locale;
+    String colorOne = "0xff${_dataCharOne?.backgroundGradientColors![0].substring(0, 6) ?? 0xff}";
+    String colorTwo = "0xff${_dataCharOne?.backgroundGradientColors![1].substring(0, 6) ?? 0xff}";
+    String colorThree = "0xff${_dataCharOne?.backgroundGradientColors![2].substring(0, 6) ?? 0xff}";
+
+    double height = MediaQuery.of(context).size.height;
+    _dataViewModel ??= Provider.of<DataViewModel>(context, listen: false);
 
     return Scaffold(
-      appBar: getCharDetAppBar(context, datal),
-      body: SingleChildScrollView(
-        child: FutureBuilder(
-          future: ApiClient().getDetailForChar(widget.charUidd, languageCode),
-          builder: (context, snapshot) {
-            // var datasChar = snapshot.data as Data?;
-            if (snapshot.hasData && snapshot.data != null) {
-              var datas = snapshot.data as Data?;
-
-              return getDetailCharBody(datas);
-            } else {
-              return const Center(child: CircularProgressIndicator());
-            }
-          },
-        ),
-      ),
+      appBar: getCharDetAppBar(context, colorOne, colorTwo),
+      body: _body(height, colorOne, colorTwo, colorThree),
     );
   }
 
-  Widget getDetailCharBody(Data? datas) {
-    return Column(
-      children: [
-        Stack(
-          children: [
-            Container(
-              padding: EdgeInsets.symmetric(
-                vertical: 20.h,
-                horizontal: 40.w,
-              ),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    Color(
-                      int.parse(
-                        "0xff${datas?.backgroundGradientColors![0].substring(0, 6) ?? 0xff}",
-                      ),
-                    ),
-                    Color(
-                      int.parse(
-                        "0xff${datas?.backgroundGradientColors![1].substring(0, 6) ?? 0xff}",
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              child: Stack(
-                children: [
-                  Positioned(
-                    bottom: 0,
-                    child: BorderedText(
-                      strokeWidth: 2,
-                      strokeColor: Color(
-                        int.parse(
-                          "0xff${datas?.backgroundGradientColors![1].substring(0, 6) ?? 0xff}",
-                        ),
-                      ).withOpacity(0.25),
-                      child: Text(
-                        datas?.displayName.toString() ?? "",
-                        style: TextStyle(
-                          color: Color(
-                            int.parse(
-                              "0xff${datas?.backgroundGradientColors![0].substring(0, 6) ?? 0xff}",
-                            ),
-                          ),
-                          fontSize: 180.sp,
-                          shadows: [
-                            Shadow(
-                              blurRadius: 5,
-                              color: Color(
-                                int.parse(
-                                  "0xff${datas?.backgroundGradientColors![1].substring(0, 6) ?? 0xff}",
-                                ),
-                              ).withOpacity(0.25),
-                              offset: const Offset(5, 5),
-                            ),
-                          ],
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    top: 0,
-                    right: 0,
-                    child: datas?.background == null
-                        ? Container()
-                        : SizedBox(
-                            height: 500.h,
-                            child: Image.network(
-                              datas!.background.toString(),
-                              fit: BoxFit.cover,
-                              color: Style().textColor,
-                            ),
-                          ),
-                  ),
-                  Center(
-                    child: SizedBox(
-                      height: 550.h,
-                      child: datas!.displayName.toString() == "FADE" ||
-                              datas.displayName.toString() == "Fade" ||
-                              datas.displayName.toString() == "فايد"
-                          ? Image.asset("assets/char/fade.webp")
-                          : datas.displayName.toString() == "BREACH" ||
-                                  datas.displayName.toString() == "بريتش" ||
-                                  datas.displayName.toString() == "Breach"
-                              ? Image.asset("assets/char/breach.webp")
-                              : datas.displayName.toString() == "RAZE" ||
-                                      datas.displayName.toString() == "Raze" ||
-                                      datas.displayName.toString() == "رايز"
-                                  ? Image.asset("assets/char/raze.webp")
-                                  : datas.displayName.toString() == "CHAMBER" ||
-                                          datas.displayName.toString() ==
-                                              "Chamber" ||
-                                          datas.displayName.toString() ==
-                                              "تشامبر"
-                                      ? Image.asset("assets/char/chamber.webp")
-                                      : datas.displayName.toString() == "KAY/O" ||
-                                              datas.displayName.toString() ==
-                                                  "Kay/o" ||
-                                              datas.displayName.toString() ==
-                                                  "كاي/أو"
-                                          ? Image.asset("assets/char/kayo.webp")
-                                          : datas.displayName.toString() == "SKYE" ||
-                                                  datas.displayName.toString() ==
-                                                      "Skye" ||
-                                                  datas.displayName.toString() ==
-                                                      "سكاي"
-                                              ? Image.asset(
-                                                  "assets/char/skye.webp")
-                                              : datas.displayName.toString() == "CYPHER" ||
-                                                      datas.displayName.toString() ==
-                                                          "Cypher" ||
-                                                      datas.displayName.toString() ==
-                                                          "سايفر"
-                                                  ? Image.asset(
-                                                      "assets/char/cypher.webp")
-                                                  : datas.displayName.toString() == "SOVA" ||
-                                                          datas.displayName.toString() ==
-                                                              "Sova" ||
-                                                          datas.displayName.toString() ==
-                                                              "سوفا"
-                                                      ? Image.asset(
-                                                          "assets/char/sova.webp")
-                                                      : datas.displayName.toString() == "KILLJOY" ||
-                                                              datas.displayName.toString() ==
-                                                                  "Killjoy" ||
-                                                              datas.displayName.toString() == "كيلجوي"
-                                                          ? Image.asset("assets/char/killjoy.webp")
-                                                          : datas.displayName.toString() == "VIPER" || datas.displayName.toString() == "Viper" || datas.displayName.toString() == "فايبر"
-                                                              ? Image.asset("assets/char/viper.webp")
-                                                              : datas.displayName.toString() == "PHOENIX" || datas.displayName.toString() == "Phoenix" || datas.displayName.toString() == "فينيكس"
-                                                                  ? Image.asset("assets/char/phoenix.webp")
-                                                                  : datas.displayName.toString() == "ASTRA" || datas.displayName.toString() == "Astra" || datas.displayName.toString() == "أسترا"
-                                                                      ? Image.asset("assets/char/astra.webp")
-                                                                      : datas.displayName.toString() == "BRIMSTONE" || datas.displayName.toString() == "Brimstone" || datas.displayName.toString() == "بريمستون"
-                                                                          ? Image.asset("assets/char/brim.webp")
-                                                                          : datas.displayName.toString() == "NEON" || datas.displayName.toString() == "Neon" || datas.displayName.toString() == "نيون"
-                                                                              ? Image.asset("assets/char/neon.webp")
-                                                                              : datas.displayName.toString() == "YORU" || datas.displayName.toString() == "Yoru" || datas.displayName.toString() == "يورو"
-                                                                                  ? Image.asset("assets/char/yoru.webp")
-                                                                                  : datas.displayName.toString() == "SAGE" || datas.displayName.toString() == "Sage" || datas.displayName.toString() == "سايج"
-                                                                                      ? Image.asset("assets/char/sage.webp")
-                                                                                      : datas.displayName.toString() == "REYNA" || datas.displayName.toString() == "Reyna" || datas.displayName.toString() == "ريينا"
-                                                                                          ? Image.asset("assets/char/reyna.webp")
-                                                                                          : datas.displayName.toString() == "OMEN" || datas.displayName.toString() == "Omen" || datas.displayName.toString() == "أومين"
-                                                                                              ? Image.asset("assets/char/omen.webp")
-                                                                                              : datas.displayName.toString() == "JETT" || datas.displayName.toString() == "Jett" || datas.displayName.toString() == "جيت"
-                                                                                                  ? Image.asset("assets/char/jett.webp")
-                                                                                                  : Image.asset("assets/char/no.png"),
-                    ),
-                  ),
-                ],
-              ),
+  Widget _body(double height, String colorOne, String colorTwo, String colorThree) {
+    return SingleChildScrollView(
+      child: _getCharDetail == null
+          ? const LoadingWidget()
+          : _charBody(
+              height,
+              colorOne,
+              colorTwo,
+              colorThree,
+              _getCharDetail,
             ),
+    );
+  }
+
+  Widget _charBody(double height, String colorOne, String colorTwo, String colorThree, DataCharOne? datas) {
+    return Container(
+      height: height,
+      decoration: BoxDecoration(
+        gradient: _colorGradient(colorOne, colorTwo),
+      ),
+      child: Padding(
+        padding: Style.pagePadding,
+        child: ListView(
+          physics: const BouncingScrollPhysics(),
+          //crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Stack(
+              children: [
+                Positioned(
+                  top: 0,
+                  right: -30.w,
+                  child: datas?.background == null ? const SizedBox.shrink() : _backgroundImage(datas, colorTwo),
+                ),
+                Positioned(
+                  top: 0,
+                  child: _charName(datas, colorTwo),
+                ),
+                Hero(
+                  tag: datas?.uuid??'',
+                  child: CacheImage(
+                    image: datas?.bustPortrait,
+                    fit: BoxFit.contain,
+                  ),
+                )
+              ],
+            ),
+            _roleChar(datas, colorThree),
+            _descChar(datas, colorThree),
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: Style.defaultPaddingSize * 1.5),
+              child: _abilitiesList(datas, colorTwo, colorThree),
+            ),
+            Padding(
+              padding: EdgeInsets.only(bottom: Style.defaultPaddingSize / 2),
+              child: _abilitiesName(datas, colorThree),
+            ),
+            _abilitiesDesc(datas, colorThree),
+            SizedBox(
+              height: 650.h,
+            )
           ],
         ),
-        Padding(
-          padding: EdgeInsets.only(top: 100.h, left: 60.w),
-          child: Row(
-            children: [
-              Text(
-                datas.displayName.toString(),
-                style: TextStyle(
-                  color: Color(
-                    int.parse(
-                      "0xff${datas.backgroundGradientColors![0].substring(0, 6)}",
-                    ),
-                  ),
-                  fontSize: 30,
-                  fontWeight: FontWeight.bold,
-                ),
-              )
-            ],
-          ),
+      ),
+    );
+  }
+
+  Widget _abilitiesDesc(DataCharOne? datas, String color) {
+    return Text(
+      datas?.abilities?[indexAbi].description ?? StringData.noData,
+      style: context.theme.bodyMedium!.copyWith(
+        color: Color(
+          int.parse(color),
         ),
-        Padding(
-          padding: defPad,
-          child: Text(
-            datas.description.toString(),
-            style: TextStyle(
-              color: Style().textColor,
-              fontSize: 48.sp,
-            ),
-          ),
+      ),
+    );
+  }
+
+  Widget _abilitiesName(DataCharOne? datas, String color) {
+    return Text(
+      datas?.abilities?[indexAbi].displayName?.toUpperCase() ?? StringData.noData,
+      textAlign: TextAlign.center,
+      style: context.theme.titleLarge!.copyWith(
+        color: Color(
+          int.parse(color),
         ),
-        Padding(
-          padding: EdgeInsets.only(top: 24.h, left: 60.w),
-          child: Row(
-            children: [
-              Text(
-                datas.role!.displayName.toString(),
-                style: TextStyle(
-                  color: Color(
-                    int.parse(
-                      "0xff${datas.backgroundGradientColors![0].substring(0, 6)}",
-                    ),
-                  ),
-                  fontSize: 30,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
-          ),
-        ),
-        Padding(
-          padding: defPad,
-          child: Wrap(
-            spacing: 30.r,
-            alignment: WrapAlignment.start,
-            children: [
-              ...List.generate(
-                datas.abilities?.length ?? 0,
-                (index) {
-                  return GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        indexAbi = index;
-                      });
-                    },
-                    child: Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 32.w,
-                        vertical: 40.h,
-                      ),
-                      height: 180.h,
-                      width: 200.w,
-                      decoration: BoxDecoration(
-                        color: index == indexAbi
-                            ? Color(
-                                int.parse(
-                                  "0xff${datas.backgroundGradientColors![0].substring(0, 6)}",
-                                ),
-                              )
-                            : Style().primaryColor,
-                        borderRadius: index == indexAbi
-                            ? BorderRadius.circular(30.r)
-                            : BorderRadius.zero,
-                      ),
-                      child: datas.abilities![index].displayIcon == null
-                          ? Image.asset("assets/char/no.png")
-                          : Image.network(
-                              datas.abilities![index].displayIcon.toString(),
-                              fit: BoxFit.contain,
-                              color: index != indexAbi
-                                  ? Color(
-                                      int.parse(
-                                        "0xff${datas.backgroundGradientColors![0].substring(0, 6)}",
-                                      ),
-                                    )
-                                  : Color(
-                                      int.parse(
-                                        "0xff${datas.backgroundGradientColors![1].substring(0, 6)}",
-                                      ),
-                                    ),
-                            ),
-                    ),
-                  );
-                },
-              ),
-            ],
-          ),
-        ),
-        Padding(
-          padding: EdgeInsets.only(
-            left: 60.w,
-            top: 30.h,
-            bottom: 100.h,
-          ),
-          child: Text(
-            datas.abilities![indexAbi].description.toString(),
-            style: TextStyle(
-              color: Style().textColor,
-              fontSize: 48.sp,
-            ),
-          ),
+      ),
+    );
+  }
+
+  Widget _abilitiesList(DataCharOne? datas, String colorTwo, String colorThree) {
+    return Wrap(
+      spacing: 30.r,
+      runSpacing: 10,
+      alignment: WrapAlignment.start,
+      children: [
+        ...List.generate(
+          datas?.abilities?.length ?? 0,
+          (index) {
+            return GestureDetector(
+              onTap: () {
+                setState(() {
+                  indexAbi = index;
+                });
+              },
+              child: abilitiesCard(index, colorTwo, colorThree, datas),
+            );
+          },
         ),
       ],
     );
   }
 
-  AppBar getCharDetAppBar(BuildContext context, Data? datas) {
-    return AppBar(
-      flexibleSpace: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Color(
+  Widget abilitiesCard(int index, String colorTwo, String colorThree, DataCharOne? datas) {
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: 32.w,
+        vertical: 40.h,
+      ),
+      height: 180.h,
+      width: 200.w,
+      decoration: BoxDecoration(
+        border: Border.all(
+          width: 1,
+          color: index == indexAbi
+              ? Color(
+                  int.parse(colorTwo),
+                )
+              : Color(
+                  int.parse(colorThree),
+                ).withOpacity(0.6),
+        ),
+        color: index == indexAbi
+            ? Color(
+                int.parse(colorTwo),
+              )
+            : Color(
+                int.parse(colorTwo),
+              ).withOpacity(0.3),
+        borderRadius: index == indexAbi ? BorderRadius.circular(Style.defaultRadiusSize * 2) : BorderRadius.zero,
+      ),
+      child: CacheImage(
+        image: datas?.abilities?[index].displayIcon,
+        fit: BoxFit.contain,
+        color: index != indexAbi
+            ? Color(
                 int.parse(
-                  "0xff${datas?.backgroundGradientColors![0].substring(0, 6) ?? 0xff}",
+                  "0xff${datas?.backgroundGradientColors![3].substring(0, 6)}",
                 ),
-              ),
-              Color(
-                int.parse(
-                  "0xff${datas?.backgroundGradientColors![1].substring(0, 6) ?? 0xff}",
-                ),
+              )
+            : Style.whiteColor,
+      ),
+    );
+  }
+
+  Widget _descChar(DataCharOne? datas, String colorThree) {
+    return Text(
+      datas?.description ?? StringData.noData,
+      style: context.theme.bodyMedium!.copyWith(
+        color: Color(
+          int.parse(colorThree),
+        ),
+      ),
+    );
+  }
+
+  Widget _roleChar(DataCharOne? datas, String colorThree) {
+    return Padding(
+      padding: EdgeInsets.only(
+        top: Style.defaultPaddingSize * 1.5,
+        bottom: Style.defaultPaddingSize / 2,
+      ),
+      child: Text(
+        datas?.role?.displayName?.toUpperCase() ?? StringData.noData,
+        style: context.theme.headlineSmall!.copyWith(
+          fontWeight: FontWeight.bold,
+          color: Color(int.parse(colorThree)),
+        ),
+      ),
+    );
+  }
+
+  Widget _charName(DataCharOne? datas, String colorTwo) {
+    return RotatedBox(
+      quarterTurns: 1,
+      child: BorderedText(
+        strokeWidth: 4,
+        strokeColor: Color(int.parse(colorTwo)),
+        child: Text(
+          datas?.displayName?.toUpperCase() ?? StringData.noData,
+          style: TextStyle(
+            letterSpacing: 4,
+            color: Color(int.parse(colorTwo)),
+            fontSize: 116.sp,
+            shadows: [
+              Shadow(
+                blurRadius: 5,
+                color: Color(
+                  int.parse(colorTwo),
+                ).withOpacity(0.3),
+                offset: const Offset(5, 7),
               ),
             ],
           ),
         ),
       ),
-      leading: IconButton(
-        onPressed: () {
-          Navigator.pop(context);
-        },
-        icon: Icon(
-          Icons.arrow_back,
-          color: Style().iconColor,
-        ),
-      ),
-      actions: [
-        Padding(
-          padding: EdgeInsets.only(right: 40.w),
-          child: GestureDetector(
-            onTap: () {
-              if (widget.isAdLoaded) {
-                widget.interstitialAd.show();
-              }
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => SoundPage(
-                    sound:
-                        datas?.voiceLine!.mediaList![0].wave.toString() ?? "",
-                    imageBack: datas?.bustPortrait.toString() ?? "",
-                    imageBack2: datas?.background.toString() ?? "",
-                    color: datas?.backgroundGradientColors![0].toString() ?? "",
-                  ),
-                ),
-              );
-            },
-            child: Icon(
-              Icons.play_circle_outline,
-              color: Style().iconColor,
-            ),
-          ),
-        ),
+    );
+  }
+
+  Widget _backgroundImage(DataCharOne? datas, String colorTwo) {
+    return CacheImage(
+      image: datas?.background ?? StringData.noData,
+      fit: BoxFit.contain,
+      height: 800.h,
+      color: Color(int.parse(colorTwo)),
+    );
+  }
+
+  LinearGradient _colorGradient(String colorOne, String colorTwo) {
+    return LinearGradient(
+      colors: [
+        Color(int.parse(colorOne)),
+        Color(int.parse(colorTwo)),
       ],
     );
+  }
+
+  PreferredSizeWidget getCharDetAppBar(BuildContext context, String colorOne, String colorTwo) {
+    return CustomAppBar(
+      flexibleSpace: _appBarColor(colorOne, colorTwo),
+      foregroundColor: Color(int.parse(colorTwo)),
+      actions: [_soundButton(context)],
+    );
+  }
+
+  Widget _appBarColor(String colorOne, String colorTwo) {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            Color(int.parse(colorOne)),
+            Color(int.parse(colorTwo)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _soundButton(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(right: 40.w),
+      child: GestureDetector(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => SoundPage(
+                sound: _dataCharOne?.voiceLine?.mediaList?[0].wave ?? "",
+                imageBack: _dataCharOne?.bustPortrait ?? "",
+                imageBack2: _dataCharOne?.background ?? "",
+                color: _dataCharOne?.backgroundGradientColors?[0] ?? "",
+              ),
+            ),
+          );
+        },
+        child: SvgPicture.asset(
+          IconPath.play.name.iconPath,
+          color: Style.iconColor,
+          height: Style.defaultPaddingSize * 1.2,
+        ),
+      ),
+    );
+  }
+
+  Future<void> _getFutures() async {
+    try {
+      await _dataViewModel!.getDetailForChar(widget.charUidd, context.locale).then(
+            (value) => _getCharDetail = value,
+          );
+      setState(() {});
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
+
+  Future<void> _getColors() async {
+    try {
+      await _dataViewModel!.getDetailForChar(widget.charUidd, context.locale).then(
+            (value) => _dataCharOne = value,
+          );
+      setState(() {});
+    } catch (e) {
+      debugPrint(e.toString());
+    }
   }
 }

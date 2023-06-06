@@ -1,12 +1,16 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import 'package:valoinfos/data/api_client.dart';
+import 'package:valoinfos/constants/extension.dart';
+import 'package:valoinfos/constants/style.dart';
 import 'package:valoinfos/model/news_api_model.dart';
-import 'package:valoinfos/utilities/style.dart';
-
-import '../provider/locale_provider.dart';
+import 'package:valoinfos/translations/locale_keys.g.dart';
+import 'package:valoinfos/utilities/strings.dart';
+import 'package:valoinfos/viewmodels/data_view_model.dart';
+import 'package:valoinfos/widgets/custom_appbar.dart';
+import 'package:valoinfos/widgets/packages/cache_image.dart';
 
 class NewsPage extends StatefulWidget {
   const NewsPage({Key? key}) : super(key: key);
@@ -16,30 +20,23 @@ class NewsPage extends StatefulWidget {
 }
 
 class _NewsPageState extends State<NewsPage> {
-  ApiClient apiClient = ApiClient();
-  List<Data> data = [];
-  // var languageCode;
+  DataViewModel? _dataViewModel;
+  List<DataNews>? _data;
 
   @override
   void initState() {
-    var languageCode =
-        Provider.of<LanguageProvider>(context, listen: false).locale;
-
-    apiClient.getNews(languageCode).then(
-          (value) => {
-            setState(() {
-              data = value!;
-            })
-          },
-        );
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      _getFutures();
+    });
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    _dataViewModel ??= Provider.of<DataViewModel>(context, listen: false);
     return Scaffold(
-      appBar: AppBar(
-        title: Text("news".tr()),
+      appBar: CustomAppBar(
+        title: Text(LocaleKeys.news.tr()),
       ),
       body: newsBody(),
     );
@@ -48,12 +45,8 @@ class _NewsPageState extends State<NewsPage> {
   Widget newsBody() {
     return SingleChildScrollView(
       child: Padding(
-        padding: defPagePadd,
-        child: Column(
-          children: [
-            newsList(),
-          ],
-        ),
+        padding: Style.pagePadding,
+        child: newsList(),
       ),
     );
   }
@@ -62,10 +55,10 @@ class _NewsPageState extends State<NewsPage> {
     return ListView.builder(
       shrinkWrap: true,
       physics: const BouncingScrollPhysics(),
-      itemCount: data.length,
+      itemCount: (_data?.length ?? 0) > 20 ? 20 : (_data?.length ?? 0),
       itemBuilder: (context, index) {
         return Padding(
-          padding: EdgeInsets.only(bottom: 48.h),
+          padding: EdgeInsets.only(bottom: Style.defaultPaddingSize),
           child: Column(
             children: [
               imageNews(index),
@@ -80,38 +73,30 @@ class _NewsPageState extends State<NewsPage> {
   Widget textCardNews(int index) {
     return Container(
       padding: EdgeInsets.symmetric(
-        vertical: 40.h,
-        horizontal: 48.w,
+        vertical: Style.defaultPaddingSize * 0.5,
+        horizontal: Style.defaultPaddingSize * 0.7,
       ),
       width: double.infinity,
       decoration: BoxDecoration(
         border: Border.all(
           width: 1,
-          color: Style().iconColor.withOpacity(0.1),
+          color: Style.darkTextColor.withOpacity(0.5),
         ),
         borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(defRadius),
-          bottomRight: Radius.circular(defRadius),
+          bottomLeft: Radius.circular(Style.defaultRadiusSize),
+          bottomRight: Radius.circular(Style.defaultRadiusSize),
         ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            data[index].displayName.toString(),
-            style: TextStyle(
-              fontSize: 48.sp,
-              color: Style().textColor,
-              fontWeight: FontWeight.w700,
-            ),
+            _data?[index].displayName ?? StringData.noData,
+            style: context.theme.titleMedium!.copyWith(fontWeight: FontWeight.bold),
           ),
           Text(
-            data[index].extraDescription?.toString() ??
-                data[index].description.toString(),
-            style: TextStyle(
-              color: Style().textColor,
-              fontSize: 40.sp,
-            ),
+            _data?[index].extraDescription ?? (_data?[index].description ?? StringData.noData),
+            style: context.theme.titleSmall!.copyWith(fontWeight: FontWeight.w400),
           ),
         ],
       ),
@@ -125,19 +110,52 @@ class _NewsPageState extends State<NewsPage> {
       decoration: BoxDecoration(
         border: Border.all(
           width: 1,
-          color: Style().iconColor.withOpacity(0.1),
+          color: Style.darkTextColor.withOpacity(0.3),
         ),
         borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(defRadius),
-          topRight: Radius.circular(defRadius),
+          topLeft: Radius.circular(Style.defaultRadiusSize),
+          topRight: Radius.circular(Style.defaultRadiusSize),
         ),
       ),
-      child: data[index].verticalPromoImage.toString() == "null"
-          ? Image.asset("assets/char/no.png")
-          : Image.network(
-              data[index].verticalPromoImage.toString(),
-              fit: BoxFit.cover,
-            ),
+      child: InkWell(
+        onTap: () => showAlertDialog(context, _data?[index].displayIcon),
+        child: CacheImage(
+          image: _data?[index].displayIcon,
+          fit: BoxFit.cover,
+        ),
+      ),
     );
+  }
+
+  void showAlertDialog(BuildContext context, String? image) {
+    showDialog(
+      barrierColor: Style.blackColor.withOpacity(0.9),
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          insetPadding: EdgeInsets.symmetric(horizontal: Style.defaultPaddingSize),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(Style.defaultRadiusSize),
+          ),
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          child: CacheImage(
+            image: image,
+            fit: BoxFit.contain,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _getFutures() async {
+    try {
+      await _dataViewModel!.getNews(context.locale).then(
+            (value) => _data = value,
+          );
+      setState(() {});
+    } catch (e) {
+      debugPrint(e.toString());
+    }
   }
 }

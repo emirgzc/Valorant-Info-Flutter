@@ -1,16 +1,18 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:provider/provider.dart';
-import 'package:valoinfos/data/api_client.dart';
+import 'package:valoinfos/constants/extension.dart';
+import 'package:valoinfos/constants/style.dart';
 import 'package:valoinfos/model/gun_api_model.dart';
 import 'package:valoinfos/pages/gun_skin_detail_page.dart';
-import 'package:valoinfos/utilities/style.dart';
-
-import '../provider/locale_provider.dart';
+import 'package:valoinfos/translations/locale_keys.g.dart';
+import 'package:valoinfos/utilities/strings.dart';
+import 'package:valoinfos/widgets/custom_appbar.dart';
+import 'package:valoinfos/widgets/packages/cache_image.dart';
 
 class GunSkinPage extends StatefulWidget {
   const GunSkinPage({Key? key, required this.skinsUid}) : super(key: key);
-  final List<Skins>? skinsUid;
+  final DataGun? skinsUid;
 
   @override
   State<GunSkinPage> createState() => _GunSkinPageState();
@@ -22,97 +24,24 @@ class _GunSkinPageState extends State<GunSkinPage> {
   @override
   void initState() {
     super.initState();
-    skins = widget.skinsUid!;
+    skins = widget.skinsUid?.skins ?? [];
     // languageCode = Provider.of<LanguageProvider>(context).locale;
   }
 
   @override
   Widget build(BuildContext context) {
-    var languageCode = Provider.of<LanguageProvider>(context, listen: false).locale;
-
     return Scaffold(
-      appBar: AppBar(),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: defPagePadd,
-          child: Column(
-            children: [
-              FutureBuilder(
-                future: ApiClient().getGuns(languageCode),
-                builder: (context, snapshot) {
-                  var datas = snapshot.data as List<Data>?;
-                  if (snapshot.connectionState == ConnectionState.done &&
-                      snapshot.hasData &&
-                      snapshot.data != null) {
-                    return gunSkinList();
-                  } else {
-                    return buildLastProcessCardEffect(
-                      ListView.builder(
-                        shrinkWrap: true,
-                        physics: const BouncingScrollPhysics(),
-                        itemCount: widget.skinsUid?.length,
-                        itemBuilder: (context, index) {
-                          return skinForGunEffect(index);
-                        },
-                      ),
-                      context,
-                    );
-                  }
-                },
-              ),
-            ],
-          ),
-        ),
-      ),
+      appBar: const CustomAppBar(),
+      body: body(),
     );
   }
 
-  Widget skinForGunEffect(int index) {
-    return Stack(
-      children: [
-        Positioned(
-          top: 0,
-          right: 0,
-          child: Container(
-            padding: EdgeInsets.symmetric(
-              vertical: 16.h,
-              horizontal: 60.w,
-            ),
-            decoration: BoxDecoration(
-              color: Style().iconColor.withOpacity(0.4),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(widget.skinsUid![index].displayName.toString()),
-              ],
-            ),
-          ),
-        ),
-        Container(
-          width: double.infinity,
-          margin: EdgeInsets.only(bottom: 30.h),
-          padding: EdgeInsets.symmetric(
-            horizontal: 60.w,
-            vertical: 120.h,
-          ),
-          decoration: BoxDecoration(
-            border: Border.all(
-              width: 1,
-              color: Style().iconColor.withOpacity(0.2),
-            ),
-            borderRadius: BorderRadius.circular(4),
-          ),
-          child: widget.skinsUid![index].displayIcon.toString() == "null"
-              ? SizedBox(
-                  height: 250.h,
-                  child: Image.asset("assets/char/no.png", fit: BoxFit.contain),
-                )
-              : Image.network(
-                  widget.skinsUid![index].displayIcon.toString(),
-                ),
-        ),
-      ],
+  Widget body() {
+    return SingleChildScrollView(
+      child: Padding(
+        padding: Style.pagePadding,
+        child: gunSkinList(),
+      ),
     );
   }
 
@@ -120,90 +49,105 @@ class _GunSkinPageState extends State<GunSkinPage> {
     return ListView.builder(
       shrinkWrap: true,
       physics: const BouncingScrollPhysics(),
-      itemCount: widget.skinsUid?.length,
+      itemCount: widget.skinsUid?.skins?.length ?? 0,
       itemBuilder: (context, index) {
-        return InkWell(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) {
-                  return GunSkinDetailPage(
-                    skinUidd: widget.skinsUid![index].uuid.toString(),
-                  );
-                },
-              ),
-            );
-          },
-          child: Stack(
-            children: [
-              Positioned(
-                top: 0,
-                right: 0,
-                child: Container(
-                  padding: EdgeInsets.symmetric(
-                    vertical: 16.h,
-                    horizontal: 60.w,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Style().iconColor.withOpacity(0.4),
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        widget.skinsUid![index].displayName.toString(),
-                        style: TextStyle(
-                          fontSize: 48.sp,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Positioned(
-                bottom: 48.h,
-                left: 16.w,
-                child: Padding(
-                  padding: EdgeInsets.only(
-                    top: 24.h,
-                    right: 24.w,
-                  ),
-                  child: Icon(
-                    Icons.info,
-                    color: Style().iconColor,
-                  ),
-                ),
-              ),
-              Container(
-                width: double.infinity,
-                margin: EdgeInsets.only(bottom: 30.h),
-                padding: EdgeInsets.symmetric(
-                  horizontal: 60.w,
-                  vertical: 120.h,
-                ),
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    width: 1,
-                    color: Style().iconColor.withOpacity(0.2),
-                  ),
-                  borderRadius: BorderRadius.circular(4),
-                ),
-                child: widget.skinsUid![index].displayIcon.toString() == "null"
-                    ? SizedBox(
-                        height: 250.h,
-                        child: Image.asset("assets/char/no.png",
-                            fit: BoxFit.contain),
-                      )
-                    : Image.network(
-                        widget.skinsUid![index].displayIcon.toString(),
-                      ),
-              ),
-            ],
+        return gunSkinCard(context, index);
+      },
+    );
+  }
+
+  Widget gunSkinCard(BuildContext context, int index) {
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) {
+              return GunSkinDetailPage(
+                skinUidd: widget.skinsUid?.skins?[index],
+              );
+            },
           ),
         );
       },
+      child: Stack(
+        children: [
+          Positioned(
+            top: 0,
+            right: 0,
+            child: titleGun(index),
+          ),
+          Positioned(
+            bottom: 48.h,
+            left: 16.w,
+            child: detailButton(context),
+          ),
+          imageGun(index),
+        ],
+      ),
+    );
+  }
+
+  Widget titleGun(int index) {
+    return Container(
+      padding: EdgeInsets.symmetric(
+        vertical: Style.defaultPaddingSize * 0.3,
+        horizontal: Style.defaultPaddingSize * 0.7,
+      ),
+      decoration: BoxDecoration(
+        color: Style.darkTextColor.withOpacity(0.2),
+      ),
+      child: Text(
+        widget.skinsUid?.skins?[index].displayName ?? StringData.noData,
+        style: context.theme.titleSmall!.copyWith(
+          overflow: TextOverflow.ellipsis,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
+  }
+
+  Widget detailButton(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(
+        vertical: Style.defaultPaddingSize * 0.2,
+        horizontal: Style.defaultPaddingSize / 2,
+      ),
+      decoration: BoxDecoration(
+        border: Border.all(
+          width: 1,
+          color: Style.darkTextColor.withOpacity(0.6),
+        ),
+      ),
+      child: Text(
+        LocaleKeys.details.tr(),
+        style: context.theme.titleMedium!.copyWith(
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
+  }
+
+  Widget imageGun(int index) {
+    return Container(
+      width: double.infinity,
+      margin: EdgeInsets.only(bottom: Style.defaultPaddingSize * 0.5),
+      padding: EdgeInsets.symmetric(
+        horizontal: 60.w,
+        vertical: 120.h,
+      ),
+      decoration: BoxDecoration(
+        border: Border.all(
+          width: 1,
+          color: Style.darkTextColor.withOpacity(0.3),
+        ),
+        borderRadius: BorderRadius.circular(Style.defaultRadiusSize),
+      ),
+      child: CacheImage(
+        image: widget.skinsUid?.skins?[index].displayIcon ?? (widget.skinsUid?.skins?[index].chromas?[0].fullRender),
+        fit: BoxFit.contain,
+        height: 270.h,
+      ),
     );
   }
 }

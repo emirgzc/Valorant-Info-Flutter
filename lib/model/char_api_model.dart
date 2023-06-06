@@ -1,15 +1,15 @@
 class CharApiModel {
   int? status;
-  List<Data>? data;
+  List<DataChar>? data;
 
   CharApiModel({this.status, this.data});
 
   CharApiModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     if (json['data'] != null) {
-      data = <Data>[];
+      data = <DataChar>[];
       json['data'].forEach((v) {
-        data!.add(Data.fromJson(v));
+        data!.add(DataChar.fromJson(v));
       });
     }
   }
@@ -24,7 +24,7 @@ class CharApiModel {
   }
 }
 
-class Data {
+class DataChar {
   String? uuid;
   String? displayName;
   String? description;
@@ -47,7 +47,7 @@ class Data {
   List<Abilities>? abilities;
   VoiceLine? voiceLine;
 
-  Data(
+  DataChar(
       {this.uuid,
       this.displayName,
       this.description,
@@ -70,7 +70,7 @@ class Data {
       this.abilities,
       this.voiceLine});
 
-  Data.fromJson(Map<String, dynamic> json) {
+  DataChar.fromJson(Map<String, dynamic> json) {
     uuid = json['uuid'];
     displayName = json['displayName'];
     description = json['description'];

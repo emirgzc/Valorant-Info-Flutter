@@ -1,12 +1,12 @@
 class GunSkinApiModel {
   int? status;
-  Data? data;
+  DataGunSkin? data;
 
   GunSkinApiModel({this.status, this.data});
 
   GunSkinApiModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
-    data = json['data'] != null ? Data.fromJson(json['data']) : null;
+    data = json['data'] != null ? DataGunSkin.fromJson(json['data']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -19,7 +19,7 @@ class GunSkinApiModel {
   }
 }
 
-class Data {
+class DataGunSkin {
   String? uuid;
   String? displayName;
   String? themeUuid;
@@ -30,7 +30,7 @@ class Data {
   List<Chromas>? chromas;
   List<Levels>? levels;
 
-  Data(
+  DataGunSkin(
       {this.uuid,
       this.displayName,
       this.themeUuid,
@@ -41,7 +41,7 @@ class Data {
       this.chromas,
       this.levels});
 
-  Data.fromJson(Map<String, dynamic> json) {
+  DataGunSkin.fromJson(Map<String, dynamic> json) {
     uuid = json['uuid'];
     displayName = json['displayName'];
     themeUuid = json['themeUuid'];
