@@ -22,6 +22,8 @@ class Style {
   );
 
   static const int defautlCrossAxisCount = 2;
+  static const int defaultMilisecond = 300;
+
 
   static const Color dateColor = Color.fromARGB(255, 117, 117, 117);
   static const Color starColor = Colors.amber;

@@ -52,6 +52,9 @@ dependencies:
   easy_localization: ^3.0.2
   get_it: ^7.6.0
   lottie: ^2.3.2
+  in_app_review: ^2.0.6
+  shared_preferences: ^2.1.2
+  rate_my_app: ^1.1.4
 
 dev_dependencies:
   flutter_test:

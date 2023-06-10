@@ -29,5 +29,12 @@ abstract class  LocaleKeys {
   static const loading = 'loading';
   static const settings = 'settings';
   static const free = 'free';
+  static const errorTitle = 'errorTitle';
+  static const errorContent = 'errorContent';
+  static const rateTitle = 'rateTitle';
+  static const rateContent = 'rateContent';
+  static const rateButton = 'rateButton';
+  static const laterButton = 'laterButton';
+  static const noButton = 'noButton';
 
 }

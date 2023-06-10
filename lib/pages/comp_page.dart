@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 import 'package:valoinfos/constants/extension.dart';
+import 'package:valoinfos/constants/handle_excepiton.dart';
 import 'package:valoinfos/constants/style.dart';
 import 'package:valoinfos/model/Competitivetiers_model.dart';
 import 'package:valoinfos/translations/locale_keys.g.dart';
@@ -44,6 +45,7 @@ class _CompPageState extends State<CompPage> {
 
   Widget body(List<Tier>? tierList) {
     return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
       child: Padding(
         padding: Style.pagePadding,
         child: compList(tierList),
@@ -111,7 +113,7 @@ class _CompPageState extends State<CompPage> {
           );
       setState(() {});
     } catch (e) {
-      debugPrint(e.toString());
+      HandleException.handle(context: context);
     }
   }
 }

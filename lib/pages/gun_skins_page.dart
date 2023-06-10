@@ -38,6 +38,7 @@ class _GunSkinPageState extends State<GunSkinPage> {
 
   Widget body() {
     return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
       child: Padding(
         padding: Style.pagePadding,
         child: gunSkinList(),

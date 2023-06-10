@@ -9,6 +9,7 @@ import 'package:valoinfos/pages/home_page.dart';
 import 'package:valoinfos/pages/other_page.dart';
 import 'package:valoinfos/pages/settings_page.dart';
 import 'package:valoinfos/widgets/packages/bottom_nav_bar.dart';
+import 'package:valoinfos/widgets/rate_app_init_widget.dart';
 
 class WayPage extends StatefulWidget {
   const WayPage({super.key});
@@ -25,6 +26,7 @@ class _WayPageState extends State<WayPage> {
   void initState() {
     _pageController = PageController(keepPage: true);
     super.initState();
+    
   }
 
   @override
@@ -34,7 +36,11 @@ class _WayPageState extends State<WayPage> {
   }
 
   List<Widget> pageList = [
-    const HomePage(),
+    RateAppInitWidget(
+      builder: (rateMyApp) => HomePage(
+        rateMyApp: rateMyApp,
+      ),
+    ),
     const GunPage(),
     const CharPage(),
     const OtherPage(),
@@ -79,7 +85,7 @@ class _WayPageState extends State<WayPage> {
     return FloatingActionButton(
       onPressed: () {
         _pageController.jumpToPage(4);
-        //Navigator.of(context).pushNamed("/gunPage");
+        //Navigator.of(context).pushNamed("/onBoardingPage");
       },
       elevation: 0,
       backgroundColor: Style.fabColor,

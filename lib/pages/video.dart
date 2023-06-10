@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:valoinfos/constants/enums.dart';
 import 'package:valoinfos/constants/extension.dart';
+import 'package:valoinfos/constants/handle_excepiton.dart';
 import 'package:valoinfos/constants/style.dart';
 import 'package:valoinfos/widgets/custom_appbar.dart';
 import 'package:video_player/video_player.dart';
@@ -29,10 +30,14 @@ class _VideoState extends State<Video> {
   }
 
   void _playVideo({bool init = false}) {
-    _controller = VideoPlayerController.network(widget.videoUrl)
-      ..addListener(() => setState(() {}))
-      ..setLooping(true)
-      ..initialize().then((value) => _controller.play());
+    try {
+      _controller = VideoPlayerController.network(widget.videoUrl)
+        ..addListener(() => setState(() {}))
+        ..setLooping(true)
+        ..initialize().then((value) => _controller.play());
+    } catch (e) {
+      HandleException.handle(context: context);
+    }
   }
 
   @override

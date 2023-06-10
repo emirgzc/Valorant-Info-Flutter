@@ -4,6 +4,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:valoinfos/constants/extension.dart';
+import 'package:valoinfos/constants/handle_excepiton.dart';
 import 'package:valoinfos/constants/style.dart';
 import 'package:valoinfos/model/news_api_model.dart';
 import 'package:valoinfos/translations/locale_keys.g.dart';
@@ -44,6 +45,7 @@ class _NewsPageState extends State<NewsPage> {
 
   Widget newsBody() {
     return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
       child: Padding(
         padding: Style.pagePadding,
         child: newsList(),
@@ -155,7 +157,7 @@ class _NewsPageState extends State<NewsPage> {
           );
       setState(() {});
     } catch (e) {
-      debugPrint(e.toString());
+      HandleException.handle(context: context);
     }
   }
 }

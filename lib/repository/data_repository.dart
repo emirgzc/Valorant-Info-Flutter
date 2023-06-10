@@ -25,9 +25,9 @@ class DataRepository extends IApiClient {
   }
 
   @override
-  Future<List<DataChar>?> getChars(Locale locale) {
+  Future<List<DataChar>?> getChars(Locale locale) async {
     try {
-      final data = _apiClient.getChars(locale);
+      final data = await _apiClient.getChars(locale);
       return data;
     } catch (e) {
       rethrow;
@@ -35,9 +35,9 @@ class DataRepository extends IApiClient {
   }
 
   @override
-  Future<DataCharOne?> getDetailForChar(String charUidd, Locale locale) {
+  Future<DataCharOne?> getDetailForChar(String charUidd, Locale locale) async {
     try {
-      final data = _apiClient.getDetailForChar(charUidd, locale);
+      final data = await _apiClient.getDetailForChar(charUidd, locale);
       return data;
     } catch (e) {
       rethrow;
@@ -45,9 +45,9 @@ class DataRepository extends IApiClient {
   }
 
   @override
-  Future<List<DataGun>?> getGuns(Locale locale) {
+  Future<List<DataGun>?> getGuns(Locale locale) async {
     try {
-      final data = _apiClient.getGuns(locale);
+      final data = await _apiClient.getGuns(locale);
       return data;
     } catch (e) {
       rethrow;
@@ -55,9 +55,9 @@ class DataRepository extends IApiClient {
   }
 
   @override
-  Future<List<DataMap>?> getMaps(Locale locale) {
+  Future<List<DataMap>?> getMaps(Locale locale) async {
     try {
-      final data = _apiClient.getMaps(locale);
+      final data = await _apiClient.getMaps(locale);
       return data;
     } catch (e) {
       rethrow;
@@ -65,9 +65,9 @@ class DataRepository extends IApiClient {
   }
 
   @override
-  Future<List<DataNews>?> getNews(Locale locale) {
+  Future<List<DataNews>?> getNews(Locale locale) async {
     try {
-      final data = _apiClient.getNews(locale);
+      final data = await _apiClient.getNews(locale);
       return data;
     } catch (e) {
       rethrow;
@@ -75,9 +75,9 @@ class DataRepository extends IApiClient {
   }
 
   @override
-  Future<DataGunSkin?> getSkinForGun(String skinUidd, Locale locale) {
+  Future<DataGunSkin?> getSkinForGun(String skinUidd, Locale locale) async {
     try {
-      final data = _apiClient.getSkinForGun(skinUidd, locale);
+      final data = await _apiClient.getSkinForGun(skinUidd, locale);
       return data;
     } catch (e) {
       rethrow;
@@ -85,9 +85,9 @@ class DataRepository extends IApiClient {
   }
 
   @override
-  Future<DataContentTiers?> getContentTiers(String contentUidd, Locale locale) {
+  Future<DataContentTiers?> getContentTiers(String contentUidd, Locale locale) async {
     try {
-      final data = _apiClient.getContentTiers(contentUidd, locale);
+      final data = await _apiClient.getContentTiers(contentUidd, locale);
       return data;
     } catch (e) {
       rethrow;
@@ -95,9 +95,9 @@ class DataRepository extends IApiClient {
   }
 
   @override
-  Future<List<Datum>?> getComp(Locale locale) {
+  Future<List<Datum>?> getComp(Locale locale) async {
     try {
-      final data = _apiClient.getComp(locale);
+      final data = await _apiClient.getComp(locale);
       return data;
     } catch (e) {
       rethrow;

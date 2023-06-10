@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:valoinfos/constants/enums.dart';
 import 'package:valoinfos/constants/extension.dart';
+import 'package:valoinfos/constants/handle_excepiton.dart';
 import 'package:valoinfos/constants/style.dart';
 import 'package:valoinfos/model/gun_api_model.dart';
 import 'package:valoinfos/translations/locale_keys.g.dart';
@@ -26,15 +27,10 @@ class _GunPageState extends State<GunPage> {
   DataViewModel? _dataViewModel;
   List<DataGun>? _getGuns;
 
-  bool isAnimation = false;
-
   @override
   void initState() {
     SchedulerBinding.instance.addPostFrameCallback((_) {
       _getFutures();
-      setState(() {
-        isAnimation = true;
-      });
     });
     super.initState();
   }
@@ -52,6 +48,7 @@ class _GunPageState extends State<GunPage> {
   Widget gunPageBody(BuildContext context) {
     _dataViewModel ??= Provider.of<DataViewModel>(context, listen: false);
     return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
       child: Padding(
         padding: Style.pagePadding,
         child: _getGuns != null ? gunList(_getGuns) : const LoadingWidget(),
@@ -82,21 +79,12 @@ class _GunPageState extends State<GunPage> {
         '/${PageNameEnum.gunDetailPage.name}',
         arguments: datas?[index],
       ),
-      child: AnimatedContainer(
-        duration: Duration(milliseconds: 300 + (index * 100)),
-        transform: Matrix4.translationValues(
-          isAnimation ? 0 : MediaQuery.of(context).size.width,
-          0,
-          0,
-        ),
-        curve: Curves.easeInOut,
-        child: Stack(
-          children: [
-            gunImage(datas, index),
-            gunNameTitle(datas, index),
-            skinLengthTitle(datas, index),
-          ],
-        ),
+      child: Stack(
+        children: [
+          gunImage(datas, index),
+          gunNameTitle(datas, index),
+          skinLengthTitle(datas, index),
+        ],
       ),
     );
   }
@@ -175,7 +163,7 @@ class _GunPageState extends State<GunPage> {
           );
       setState(() {});
     } catch (e) {
-      debugPrint(e.toString());
+      HandleException.handle(context: context);
     }
   }
 }

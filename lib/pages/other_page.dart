@@ -6,6 +6,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:valoinfos/constants/extension.dart';
+import 'package:valoinfos/constants/handle_excepiton.dart';
 import 'package:valoinfos/constants/style.dart';
 import 'package:valoinfos/model/Competitivetiers_model.dart';
 import 'package:valoinfos/model/map_api_model.dart';
@@ -163,7 +164,7 @@ class _OtherPageState extends State<OtherPage> {
           );
       setState(() {});
     } catch (e) {
-      debugPrint(e.toString());
+      HandleException.handle(context: context);
     }
   }
 }

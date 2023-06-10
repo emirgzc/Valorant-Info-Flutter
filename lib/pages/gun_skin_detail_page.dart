@@ -7,11 +7,11 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:valoinfos/constants/enums.dart';
 import 'package:valoinfos/constants/extension.dart';
+import 'package:valoinfos/constants/handle_excepiton.dart';
 import 'package:valoinfos/constants/style.dart';
 import 'package:valoinfos/model/content_tiers_model.dart';
 import 'package:valoinfos/model/gun_api_model.dart';
 import 'package:valoinfos/model/gun_skin_api_model.dart';
-import 'package:valoinfos/pages/video.dart';
 import 'package:valoinfos/utilities/strings.dart';
 import 'package:valoinfos/viewmodels/data_view_model.dart';
 import 'package:valoinfos/widgets/packages/cache_image.dart';
@@ -49,6 +49,11 @@ class _GunSkinDetailPageState extends State<GunSkinDetailPage> {
   }
 
   Widget body(BuildContext context, DataGunSkin? datas) {
+    Color color = Color(
+      int.parse(
+        "0xff${_dataContentTiers?.highlightColor ?? 0xffc}",
+      ),
+    );
     return Stack(
       children: [
         Align(
@@ -59,15 +64,46 @@ class _GunSkinDetailPageState extends State<GunSkinDetailPage> {
           ),
         ),
         SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
           child: Padding(
             padding: Style.pagePadding * 0.5,
             child: gunSkinDetailBody(context, datas, _dataContentTiers?.displayIcon),
           ),
         ),
         Positioned(
-          top: 60,
-          left: 0,
+          top: 180.h,
+          left: 30.w,
           child: backButton(context),
+        ),
+        Positioned(
+          top: 200.h,
+          right: 30.w,
+          child: AnimatedCrossFade(
+            firstChild: InkWell(
+              onTap: () {
+                Navigator.pushNamed(
+                  context,
+                  '/videoPage',
+                  arguments: datas?.chromas![indexA].streamedVideo ?? "",
+                );
+              },
+              child: Container(
+                margin: EdgeInsets.only(right: Style.defaultPaddingSize),
+                padding: EdgeInsets.all(Style.defaultPaddingSize * 0.45),
+                decoration: BoxDecoration(
+                  color: color.withOpacity(0.8),
+                  borderRadius: BorderRadius.circular(Style.defaultRadiusSize),
+                ),
+                child: SvgPicture.asset(
+                  IconPath.play.name.iconPath,
+                  color: Style.whiteColor,
+                ),
+              ),
+            ),
+            secondChild: const SizedBox.shrink(),
+            crossFadeState: indexA != 0 ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+            duration: const Duration(milliseconds: Style.defaultMilisecond),
+          ),
         ),
       ],
     );
@@ -130,7 +166,7 @@ class _GunSkinDetailPageState extends State<GunSkinDetailPage> {
             horizontal: Style.defaultPaddingSize,
           ),
           child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Padding(
                 padding: EdgeInsets.only(right: Style.defaultPaddingSize / 4),
@@ -180,6 +216,7 @@ class _GunSkinDetailPageState extends State<GunSkinDetailPage> {
 
   Widget levelList(DataGunSkin? data) {
     return ListView.builder(
+      physics: const BouncingScrollPhysics(),
       padding: EdgeInsets.symmetric(vertical: Style.defaultPaddingSize),
       itemCount: data?.levels?.length ?? 0,
       shrinkWrap: true,
@@ -194,15 +231,10 @@ class _GunSkinDetailPageState extends State<GunSkinDetailPage> {
   Widget levelCard(DataGunSkin? data, int index, String levelTitle, BuildContext context) {
     return InkWell(
       onTap: () {
-        Navigator.push(
+        Navigator.pushNamed(
           context,
-          MaterialPageRoute(
-            builder: (context) {
-              return Video(
-                videoUrl: data?.levels![index].streamedVideo ?? "",
-              );
-            },
-          ),
+          '/videoPage',
+          arguments: data?.levels![index].streamedVideo ?? "",
         );
       },
       child: Padding(
@@ -239,7 +271,13 @@ class _GunSkinDetailPageState extends State<GunSkinDetailPage> {
                 Container(
                   margin: EdgeInsets.only(left: Style.defaultPaddingSize * 0.6),
                   padding: EdgeInsets.all(Style.defaultPaddingSize * 0.6),
-                  color: Style.textColor,
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      width: 1,
+                      color: Style.darkTextColor.withOpacity(0.3),
+                    ),
+                    color: Style.textColor,
+                  ),
                   child: SvgPicture.asset(
                     IconPath.play.name.iconPath,
                     color: Style.darkTextColor,
@@ -297,7 +335,7 @@ class _GunSkinDetailPageState extends State<GunSkinDetailPage> {
           );
       setState(() {});
     } catch (e) {
-      debugPrint(e.toString());
+      HandleException.handle(context: context);
     }
   }
 
@@ -308,7 +346,7 @@ class _GunSkinDetailPageState extends State<GunSkinDetailPage> {
           );
       setState(() {});
     } catch (e) {
-      debugPrint(e.toString());
+      HandleException.handle(context: context);
     }
   }
 }

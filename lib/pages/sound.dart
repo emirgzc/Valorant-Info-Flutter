@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:valoinfos/constants/handle_excepiton.dart';
 import 'package:valoinfos/constants/style.dart';
 import 'package:valoinfos/widgets/custom_appbar.dart';
 import 'package:valoinfos/widgets/packages/cache_image.dart';
@@ -31,10 +32,14 @@ class _SoundPageState extends State<SoundPage> {
   }
 
   void _playVideo({bool init = false}) {
-    _controller = VideoPlayerController.network(widget.sound)
-      ..addListener(() => setState(() {}))
-      ..setLooping(true)
-      ..initialize().then((value) => _controller.play());
+    try {
+      _controller = VideoPlayerController.network(widget.sound)
+        ..addListener(() => setState(() {}))
+        ..setLooping(true)
+        ..initialize().then((value) => _controller.play());
+    } catch (e) {
+      HandleException.handle(context: context);
+    }
   }
 
   @override

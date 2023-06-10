@@ -7,6 +7,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:valoinfos/constants/enums.dart';
 import 'package:valoinfos/constants/extension.dart';
+import 'package:valoinfos/constants/handle_excepiton.dart';
 import 'package:valoinfos/constants/style.dart';
 import 'package:valoinfos/model/char_one_api_model.dart';
 import 'package:valoinfos/pages/sound.dart';
@@ -56,6 +57,7 @@ class _CharDetailPageState extends State<CharDetailPage> {
 
   Widget _body(double height, String colorOne, String colorTwo, String colorThree) {
     return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
       child: _getCharDetail == null
           ? const LoadingWidget()
           : _charBody(
@@ -92,7 +94,7 @@ class _CharDetailPageState extends State<CharDetailPage> {
                   child: _charName(datas, colorTwo),
                 ),
                 Hero(
-                  tag: datas?.uuid??'',
+                  tag: datas?.uuid ?? '',
                   child: CacheImage(
                     image: datas?.bustPortrait,
                     fit: BoxFit.contain,
@@ -334,7 +336,7 @@ class _CharDetailPageState extends State<CharDetailPage> {
           );
       setState(() {});
     } catch (e) {
-      debugPrint(e.toString());
+      HandleException.handle(context: context);
     }
   }
 
@@ -345,7 +347,7 @@ class _CharDetailPageState extends State<CharDetailPage> {
           );
       setState(() {});
     } catch (e) {
-      debugPrint(e.toString());
+      HandleException.handle(context: context);
     }
   }
 }

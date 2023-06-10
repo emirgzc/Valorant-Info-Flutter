@@ -6,9 +6,12 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
+import 'package:rate_my_app/rate_my_app.dart';
 import 'package:valoinfos/constants/enums.dart';
 import 'package:valoinfos/constants/extension.dart';
+import 'package:valoinfos/constants/handle_excepiton.dart';
 import 'package:valoinfos/constants/style.dart';
 import 'package:valoinfos/model/char_api_model.dart';
 import 'package:valoinfos/translations/locale_keys.g.dart';
@@ -20,7 +23,10 @@ import 'package:valoinfos/widgets/packages/lottie/loading_widget.dart';
 class HomePage extends StatefulWidget {
   const HomePage({
     Key? key,
+    required this.rateMyApp,
   }) : super(key: key);
+
+  final RateMyApp rateMyApp;
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -59,10 +65,39 @@ class _HomePageState extends State<HomePage> {
         padding: EdgeInsets.all(Style.defaultPaddingSize * .85),
         child: InkWell(
           onTap: () {
-            Navigator.pushNamed(context, '/${PageNameEnum.settingsPage.name}');
+            widget.rateMyApp.showRateDialog(
+              barrierDismissible: true,
+              contentBuilder: (context, defaultContent) {
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Lottie.asset(LottiePath.rate.name.lottiePath, height: 400.h),
+                    Text(LocaleKeys.rateContent.tr(), textAlign: TextAlign.center),
+                  ],
+                );
+              },
+              context,
+              title: LocaleKeys.rateTitle.tr(),
+              rateButton: LocaleKeys.rateButton.tr(),
+              noButton: LocaleKeys.noButton.tr(),
+              laterButton: LocaleKeys.laterButton.tr(),
+              dialogStyle: DialogStyle(
+                titleStyle: const TextStyle(color: Style.primaryColor),
+                titleAlign: TextAlign.center,
+                dialogShape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(Style.defaultRadiusSize),
+                  side: BorderSide(color: Style.primaryColor, width: Style.defaultPaddingSize * 0.15),
+                ),
+                contentPadding: EdgeInsets.zero,
+              ),
+              onDismissed: () => widget.rateMyApp.callEvent(RateMyAppEventType.laterButtonPressed),
+            );
           },
-          child: SvgPicture.asset(
-            IconPath.list.name.iconPath,
+          child: Padding(
+            padding: EdgeInsets.all(Style.defaultPaddingSize * 0.25),
+            child: SvgPicture.asset(
+              IconPath.pencil.name.iconPath,
+            ),
           ),
         ),
       ),
@@ -78,6 +113,23 @@ class _HomePageState extends State<HomePage> {
       ],
     );
   }
+
+  List<Widget> _actionsBuilder(BuildContext context, double? stars) {
+    if (stars == null) {
+      return [
+        _buildCancelButton(),
+      ];
+    } else {
+      return [
+        _buildCancelButton(),
+        _buildOkButton(),
+      ];
+    }
+  }
+
+  Widget _buildCancelButton() => RateMyAppRateButton(widget.rateMyApp, text: 'OK');
+
+  Widget _buildOkButton() => RateMyAppNoButton(widget.rateMyApp, text: 'CANCEL');
 
   Widget body(String title, String? image, String discoverTitle, BuildContext context, int rand, String color) {
     return SingleChildScrollView(
@@ -149,7 +201,7 @@ class _HomePageState extends State<HomePage> {
           );
       setState(() {});
     } catch (e) {
-      debugPrint(e.toString());
+      HandleException.handle(context: context);
     }
   }
 }

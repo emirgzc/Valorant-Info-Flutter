@@ -10,8 +10,10 @@ import 'package:valoinfos/pages/gun_skins_page.dart';
 import 'package:valoinfos/pages/land_scape_player_page.dart';
 import 'package:valoinfos/pages/map_page.dart';
 import 'package:valoinfos/pages/news_page.dart';
+import 'package:valoinfos/pages/on_boarding_page.dart';
 import 'package:valoinfos/pages/other_page.dart';
 import 'package:valoinfos/pages/settings_page.dart';
+import 'package:valoinfos/pages/video.dart';
 import 'package:valoinfos/pages/way_page.dart';
 import 'package:video_player/video_player.dart';
 
@@ -101,10 +103,24 @@ class RouteGenerator {
           builder: (context) => const CompPage(),
           settings: settings,
         );
+
+      case "/onBoardingPage":
+        return CupertinoPageRoute(
+          builder: (context) => const OnBoardingScreen(),
+          settings: settings,
+        );
       case "/landPage":
         return CupertinoPageRoute(
           builder: (context) => LandScapePlayerPage(
             controller: settings.arguments as VideoPlayerController,
+          ),
+          settings: settings,
+        );
+
+        case "/videoPage":
+        return CupertinoPageRoute(
+          builder: (context) =>  Video(
+            videoUrl: settings.arguments as String,
           ),
           settings: settings,
         );

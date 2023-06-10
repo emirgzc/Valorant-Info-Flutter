@@ -26,23 +26,20 @@ class _GunDetailsState extends State<GunDetailsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: getAppBar(context),
+      appBar: const CustomAppBar(),
       body: gunDetailBody(),
     );
   }
 
   Widget gunDetailBody() {
     return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
       child: Padding(
         padding: Style.pagePadding,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            gunTitle(),
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: Style.defaultPaddingSize * 2.3),
-              child: gunImage(),
-            ),
+            gunImage(),
             gunInfos(),
             SizedBox(height: 200.h),
           ],
@@ -52,13 +49,24 @@ class _GunDetailsState extends State<GunDetailsPage> {
   }
 
   Widget gunImage() {
-    return Center(
-      child: Hero(
-        tag: widget.gunApiModel.uuid ?? StringData.noData,
-        child: CacheImage(
-          image: widget.gunApiModel.displayIcon,
-          fit: BoxFit.contain,
-          height: 270.h,
+    return Container(
+      margin: EdgeInsets.only(bottom: 60.h),
+      padding: EdgeInsets.symmetric(
+        vertical: Style.defaultPaddingSize,
+        horizontal: Style.defaultPaddingSize / 2,
+      ),
+      decoration: BoxDecoration(
+        color: Style.primaryColor.withOpacity(0.8),
+        borderRadius: BorderRadius.circular(Style.defaultRadiusSize),
+      ),
+      child: Center(
+        child: Hero(
+          tag: widget.gunApiModel.uuid ?? StringData.noData,
+          child: CacheImage(
+            image: widget.gunApiModel.displayIcon,
+            fit: BoxFit.contain,
+            height: 270.h,
+          ),
         ),
       ),
     );
@@ -94,12 +102,16 @@ class _GunDetailsState extends State<GunDetailsPage> {
           padding: EdgeInsets.only(bottom: 60.h),
           child: bigTitle("titleGun".tr()),s
         ), */
-        titleRow(
+        Padding(
+          padding: EdgeInsets.only(bottom: Style.defaultPaddingSize),
+          child: gunTitle(),
+        ),
+        /* titleRow(
           "${LocaleKeys.nameGun.tr()} : ",
           widget.gunApiModel.displayName,
-        ),
+        ), */
         Padding(
-          padding: EdgeInsets.symmetric(vertical: ((Style.defaultPaddingSize / 2) * 5).h),
+          padding: EdgeInsets.only(bottom: ((Style.defaultPaddingSize / 2) * 5).h),
           child: titleRow(
             "${LocaleKeys.typeGun.tr()} : ",
             widget.gunApiModel.shopData?.categoryText ?? StringData.noData,
@@ -362,18 +374,6 @@ class _GunDetailsState extends State<GunDetailsPage> {
           style: context.theme.titleLarge,
         ),
       ],
-    );
-  }
-
-  PreferredSizeWidget getAppBar(BuildContext context) {
-    return CustomAppBar(
-      leading: IconButton(
-        onPressed: () => Navigator.pop(context),
-        icon: SvgPicture.asset(
-          IconPath.back.name.iconPath,
-          height: Style.defaultPaddingSize * 1.3,
-        ),
-      ),
     );
   }
 }

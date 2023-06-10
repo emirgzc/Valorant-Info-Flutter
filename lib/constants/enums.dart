@@ -26,6 +26,7 @@ enum IconPath {
   gun,
   char,
   pause,
+  pencil,
 }
 
 enum LogoPath {
@@ -35,4 +36,6 @@ enum LogoPath {
 
 enum LottiePath {
   loading,
+  error,
+  rate,
 }

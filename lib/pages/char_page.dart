@@ -5,6 +5,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:valoinfos/constants/enums.dart';
+import 'package:valoinfos/constants/handle_excepiton.dart';
 import 'package:valoinfos/constants/style.dart';
 import 'package:valoinfos/model/char_api_model.dart';
 import 'package:valoinfos/translations/locale_keys.g.dart';
@@ -47,6 +48,7 @@ class _CharPageState extends State<CharPage> {
 
   Widget charBody() {
     return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
       child: Padding(
         padding: Style.pagePadding,
         child: _getChars != null ? listChar(_getChars) : const LoadingWidget(),
@@ -194,7 +196,7 @@ class _CharPageState extends State<CharPage> {
           );
       setState(() {});
     } catch (e) {
-      debugPrint(e.toString());
+      HandleException.handle(context: context);
     }
   }
 }

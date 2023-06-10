@@ -26,5 +26,12 @@
   "diger":"Diğer",
   "loading":"Yükleniyor...",
   "settings":"Ayarlar",
-  "free":"Ücretsiz"
+  "free":"Ücretsiz",
+  "errorTitle":"BİR HATA OLUŞTU",
+  "errorContent":"Bir şeyler ters gitti. Lütfen internet bağlantınızı kontrol ediniz ve tekrar deneyiniz.",
+  "rateTitle":"Uygulamayı Değerlendirin",
+  "rateContent":"Bu uygulamayı beğendiyseniz, lütfen incelemek için biraz zaman ayırın! Değerlendirmeniz bize yardımcı oluyor.",
+  "rateButton":"Yorum Yap",
+  "laterButton":"Belki Sonra",
+  "noButton":"Hayır, Teşekkürler"
 }

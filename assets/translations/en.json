@@ -26,5 +26,13 @@
   "diger":"Other",
   "loading":"Loading...",
   "settings":"Settings",
-  "free":"Free"
+  "free":"Free",
+  "premium":"Premium",
+  "errorTitle":"SOMETHİNG WENT WRONG",
+  "errorContent":"Something went wrong. Please check your internet connection and try again.",
+  "rateTitle":"Rate This App",
+  "rateContent":"If you like this app, please take a little bit of your time to review it!",
+  "rateButton":"Rate",
+  "laterButton":"Maybe Later",
+  "noButton":"No, Thanks"
 }
