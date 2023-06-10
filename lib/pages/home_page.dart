@@ -114,23 +114,6 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  List<Widget> _actionsBuilder(BuildContext context, double? stars) {
-    if (stars == null) {
-      return [
-        _buildCancelButton(),
-      ];
-    } else {
-      return [
-        _buildCancelButton(),
-        _buildOkButton(),
-      ];
-    }
-  }
-
-  Widget _buildCancelButton() => RateMyAppRateButton(widget.rateMyApp, text: 'OK');
-
-  Widget _buildOkButton() => RateMyAppNoButton(widget.rateMyApp, text: 'CANCEL');
-
   Widget body(String title, String? image, String discoverTitle, BuildContext context, int rand, String color) {
     return SingleChildScrollView(
       child: Padding(
