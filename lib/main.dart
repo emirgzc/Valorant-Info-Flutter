@@ -81,3 +81,5 @@ class _MyAppState extends State<MyApp> {
     );
   }
 }
+
+//keytool -export -rfc -alias key0 -file keyValorant.pem -keystore keyValorant.jks  
