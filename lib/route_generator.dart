@@ -1,23 +1,22 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:valoinfos/pages/char_detail_page.dart';
-import 'package:valoinfos/pages/char_page.dart';
-import 'package:valoinfos/pages/comp_page.dart';
-import 'package:valoinfos/pages/gun_details_page.dart';
-import 'package:valoinfos/pages/gun_page.dart';
-import 'package:valoinfos/pages/gun_skin_detail_page.dart';
-import 'package:valoinfos/pages/gun_skins_page.dart';
-import 'package:valoinfos/pages/land_scape_player_page.dart';
-import 'package:valoinfos/pages/map_page.dart';
-import 'package:valoinfos/pages/news_page.dart';
-import 'package:valoinfos/pages/on_boarding_page.dart';
-import 'package:valoinfos/pages/other_page.dart';
-import 'package:valoinfos/pages/settings_page.dart';
-import 'package:valoinfos/pages/video.dart';
-import 'package:valoinfos/pages/way_page.dart';
+import 'package:valoinfos/feature/char/char_detail_page.dart';
+import 'package:valoinfos/feature/char/char_page.dart';
+import 'package:valoinfos/feature/comp/comp_page.dart';
+import 'package:valoinfos/feature/gun/gun_details_page.dart';
+import 'package:valoinfos/feature/gun/gun_page.dart';
+import 'package:valoinfos/feature/gun/gun_skin_detail_page.dart';
+import 'package:valoinfos/feature/gun/gun_skins_page.dart';
+import 'package:valoinfos/feature/gun/land_scape_player_page.dart';
+import 'package:valoinfos/feature/map/map_page.dart';
+import 'package:valoinfos/feature/news/news_page.dart';
+import 'package:valoinfos/feature/other/other_page.dart';
+import 'package:valoinfos/feature/other/settings_page.dart';
+import 'package:valoinfos/feature/gun/video.dart';
+import 'package:valoinfos/feature/other/way_page.dart';
 import 'package:video_player/video_player.dart';
 
-import 'model/gun_api_model.dart';
+import 'product/model/gun_api_model.dart';
 
 class RouteGenerator {
   static Route<dynamic>? _generateRoute(Widget togoPage, RouteSettings settings) {
@@ -101,12 +100,6 @@ class RouteGenerator {
       case "/compPage":
         return CupertinoPageRoute(
           builder: (context) => const CompPage(),
-          settings: settings,
-        );
-
-      case "/onBoardingPage":
-        return CupertinoPageRoute(
-          builder: (context) => const OnBoardingScreen(),
           settings: settings,
         );
       case "/landPage":

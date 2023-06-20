@@ -4,12 +4,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import 'package:valoinfos/constants/locator.dart';
-import 'package:valoinfos/constants/style.dart';
+import 'package:valoinfos/product/utilities/locator.dart';
+import 'package:valoinfos/product/utilities/style.dart';
 import 'package:valoinfos/route_generator.dart';
-import 'package:valoinfos/translations/codegen_loader.g.dart';
-import 'package:valoinfos/viewmodels/data_view_model.dart';
-import 'package:valoinfos/widgets/packages/shimmer/shimmer.dart';
+import 'package:valoinfos/product/utilities/translations/codegen_loader.g.dart';
+import 'package:valoinfos/product/viewmodels/data_view_model.dart';
+import 'package:valoinfos/product/widgets/packages/shimmer/shimmer.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
