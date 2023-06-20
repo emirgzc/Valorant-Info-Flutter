@@ -1,7 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.emirgozcu.valoinfos">
+    package="com.emirgozcu.valoinfos" >
+     <uses-permission android:name="android.permission.INTERNET" />
    <application
-        android:label="Valorant Info"
+        android:label="Valorant Info" 
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
