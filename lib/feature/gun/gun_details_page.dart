@@ -5,11 +5,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:valoinfos/product/constants/string_constants.dart';
-import 'package:valoinfos/product/utilities/extension.dart';
-import 'package:valoinfos/product/utilities/style.dart';
-import 'package:valoinfos/product/model/gun_api_model.dart';
+import 'package:valoinfos/product/utility/extension.dart';
+import 'package:valoinfos/product/utility/style.dart';
+import 'package:valoinfos/product/models/gun_api_model.dart';
 import 'package:valoinfos/feature/gun/gun_skins_page.dart';
-import 'package:valoinfos/product/utilities/translations/locale_keys.g.dart';
+import 'package:valoinfos/product/utility/translations/locale_keys.g.dart';
 import 'package:valoinfos/product/widgets/custom_appbar.dart';
 import 'package:valoinfos/product/widgets/packages/cache_image.dart';
 

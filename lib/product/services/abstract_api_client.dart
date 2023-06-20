@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:valoinfos/model/Competitivetiers_model.dart';
-import 'package:valoinfos/product/model/char_api_model.dart';
-import 'package:valoinfos/product/model/char_one_api_model.dart';
-import 'package:valoinfos/product/model/content_tiers_model.dart';
-import 'package:valoinfos/product/model/gun_api_model.dart';
-import 'package:valoinfos/product/model/gun_skin_api_model.dart';
-import 'package:valoinfos/product/model/map_api_model.dart';
-import 'package:valoinfos/product/model/news_api_model.dart';
+import 'package:valoinfos/product/models/char_api_model.dart';
+import 'package:valoinfos/product/models/char_one_api_model.dart';
+import 'package:valoinfos/product/models/competitivetiers_model.dart';
+import 'package:valoinfos/product/models/content_tiers_model.dart';
+import 'package:valoinfos/product/models/gun_api_model.dart';
+import 'package:valoinfos/product/models/gun_skin_api_model.dart';
+import 'package:valoinfos/product/models/map_api_model.dart';
+import 'package:valoinfos/product/models/news_api_model.dart';
 
 abstract class IApiClient {
   Future<List<DataMap>?> getMaps(Locale locale);

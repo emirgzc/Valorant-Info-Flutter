@@ -16,7 +16,7 @@ import 'package:valoinfos/feature/gun/video.dart';
 import 'package:valoinfos/feature/other/way_page.dart';
 import 'package:video_player/video_player.dart';
 
-import 'product/model/gun_api_model.dart';
+import 'product/models/gun_api_model.dart';
 
 class RouteGenerator {
   static Route<dynamic>? _generateRoute(Widget togoPage, RouteSettings settings) {

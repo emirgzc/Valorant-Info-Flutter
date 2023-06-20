@@ -2,10 +2,10 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
-import 'package:valoinfos/product/utilities/extension.dart';
-import 'package:valoinfos/product/utilities/style.dart';
+import 'package:valoinfos/product/utility/extension.dart';
+import 'package:valoinfos/product/utility/style.dart';
 import 'package:valoinfos/product/enums/lottie_constants.dart';
-import 'package:valoinfos/product/utilities/translations/locale_keys.g.dart';
+import 'package:valoinfos/product/utility/translations/locale_keys.g.dart';
 
 class LoadingWidget extends StatelessWidget {
   const LoadingWidget({

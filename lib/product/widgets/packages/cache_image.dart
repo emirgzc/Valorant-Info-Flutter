@@ -1,8 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:valoinfos/product/utilities/extension.dart';
-import 'package:valoinfos/product/utilities/style.dart';
+import 'package:valoinfos/product/utility/extension.dart';
+import 'package:valoinfos/product/utility/style.dart';
 import 'package:valoinfos/product/enums/icon_constants.dart';
 import 'package:valoinfos/product/widgets/packages/shimmer/shimmer_loading.dart';
 

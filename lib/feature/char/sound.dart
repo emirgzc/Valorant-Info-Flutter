@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:valoinfos/product/utilities/handle_excepiton.dart';
-import 'package:valoinfos/product/utilities/style.dart';
+import 'package:valoinfos/product/utility/handle_excepiton.dart';
+import 'package:valoinfos/product/utility/style.dart';
 import 'package:valoinfos/product/widgets/custom_appbar.dart';
 import 'package:valoinfos/product/widgets/packages/cache_image.dart';
 import 'package:video_player/video_player.dart';

@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 import 'package:rate_my_app/rate_my_app.dart';
-import 'package:valoinfos/product/utilities/style.dart';
+import 'package:valoinfos/product/utility/style.dart';
 import 'package:valoinfos/product/enums/lottie_constants.dart';
-import 'package:valoinfos/product/utilities/translations/locale_keys.g.dart';
+import 'package:valoinfos/product/utility/translations/locale_keys.g.dart';
 
 class RateAppInitWidget extends StatefulWidget {
   const RateAppInitWidget({super.key, required this.builder});

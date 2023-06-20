@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:valoinfos/product/utilities/style.dart';
+import 'package:valoinfos/product/utility/style.dart';
 import 'package:valoinfos/feature/char/char_page.dart';
 import 'package:valoinfos/feature/gun/gun_page.dart';
 import 'package:valoinfos/feature/home/home_page.dart';

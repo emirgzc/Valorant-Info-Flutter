@@ -1,6 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:valoinfos/product/utilities/translations/locale_keys.g.dart';
+import 'package:valoinfos/product/utility/translations/locale_keys.g.dart';
 import 'package:valoinfos/product/widgets/dialogs/error_dialog.dart';
 
 class HandleException {

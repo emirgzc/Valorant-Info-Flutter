@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
-import 'package:valoinfos/product/utilities/extension.dart';
-import 'package:valoinfos/product/utilities/style.dart';
+import 'package:valoinfos/product/utility/extension.dart';
+import 'package:valoinfos/product/utility/style.dart';
 import 'package:valoinfos/product/enums/lottie_constants.dart';
 
 class ErrorDialog extends StatelessWidget {

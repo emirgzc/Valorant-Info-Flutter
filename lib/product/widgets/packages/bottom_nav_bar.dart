@@ -2,11 +2,11 @@ import 'package:bubble_bottom_bar/bubble_bottom_bar.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:valoinfos/product/utilities/extension.dart';
-import 'package:valoinfos/product/utilities/style.dart';
+import 'package:valoinfos/product/utility/extension.dart';
+import 'package:valoinfos/product/utility/style.dart';
 import 'package:valoinfos/product/enums/icon_constants.dart';
 import 'package:valoinfos/product/enums/logo_constants.dart';
-import 'package:valoinfos/product/utilities/translations/locale_keys.g.dart';
+import 'package:valoinfos/product/utility/translations/locale_keys.g.dart';
 
 class CustomBottomNavbar extends StatefulWidget {
   CustomBottomNavbar(this._currentIndex, {required this.setIndex, super.key});

@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:valoinfos/product/utilities/locator.dart';
-import 'package:valoinfos/product/data/abstract_api_client.dart';
-import 'package:valoinfos/model/Competitivetiers_model.dart';
-import 'package:valoinfos/product/model/content_tiers_model.dart';
-import 'package:valoinfos/product/model/news_api_model.dart';
-import 'package:valoinfos/product/model/map_api_model.dart';
-import 'package:valoinfos/product/model/gun_skin_api_model.dart';
-import 'package:valoinfos/product/model/gun_api_model.dart';
-import 'package:valoinfos/product/model/char_one_api_model.dart';
-import 'package:valoinfos/product/model/char_api_model.dart';
+import 'package:valoinfos/product/models/competitivetiers_model.dart';
+import 'package:valoinfos/product/utility/locator.dart';
+import 'package:valoinfos/product/services/abstract_api_client.dart';
+import 'package:valoinfos/product/models/content_tiers_model.dart';
+import 'package:valoinfos/product/models/news_api_model.dart';
+import 'package:valoinfos/product/models/map_api_model.dart';
+import 'package:valoinfos/product/models/gun_skin_api_model.dart';
+import 'package:valoinfos/product/models/gun_api_model.dart';
+import 'package:valoinfos/product/models/char_one_api_model.dart';
+import 'package:valoinfos/product/models/char_api_model.dart';
 import 'package:valoinfos/product/repository/data_repository.dart';
 
 class DataViewModel extends IApiClient with ChangeNotifier {
